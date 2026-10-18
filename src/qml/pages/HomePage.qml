@@ -92,6 +92,22 @@ BigscreenUI.Page {
 
         onActiveFocusChanged: moveFocusToHeaderIfEmpty()
 
+        // Focusing the grid itself would hand focus back to the header, which is part of it and
+        // had it last, so focus the course instead
+        function focusCourses(): bool {
+            if (count === 0) {
+                return false;
+            }
+
+            if (currentIndex < 0) {
+                currentIndex = 0;
+            }
+
+            currentItem?.forceActiveFocus();
+
+            return true;
+        }
+
         // With no courses, such as after an error, the filters or the search are what is left
         function moveFocusToHeaderIfEmpty(): void {
             if (activeFocus && count === 0 && headerItem && !headerItem.activeFocus) {
@@ -115,14 +131,7 @@ BigscreenUI.Page {
             width: grid.width - grid.leftMargin - grid.rightMargin
             implicitHeight: headerLayout.implicitHeight + Kirigami.Units.gridUnit * 2
 
-            Keys.onDownPressed: event => {
-                if (grid.count > 0) {
-                    grid.forceActiveFocus();
-                    event.accepted = true;
-                } else {
-                    event.accepted = false;
-                }
-            }
+            Keys.onDownPressed: event => event.accepted = grid.focusCourses()
 
             // The band reaches the edges of the screen
             Rectangle {
