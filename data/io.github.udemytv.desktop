@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2026 Jan Claussen <jan.claussen10@web.de>
+# SPDX-License-Identifier: CC0-1.0
+[Desktop Entry]
+Type=Application
+Name=Udemy TV
+GenericName=Online Courses
+Comment=Take your Udemy courses on the TV (unofficial)
+Comment[de]=Udemy-Kurse auf dem Fernseher ansehen (inoffiziell)
+Exec=udemy-tv
+Icon=io.github.udemytv
+Categories=Education;AudioVideo;Qt;KDE;
+Keywords=udemy;course;learning;video;lecture;
+StartupNotify=true
+StartupWMClass=udemy-tv

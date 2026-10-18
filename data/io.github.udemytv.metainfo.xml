@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Jan Claussen <jan.claussen10@web.de> -->
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<component type="desktop-application">
+  <id>io.github.udemytv</id>
+  <launchable type="desktop-id">io.github.udemytv.desktop</launchable>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <url type="homepage">https://github.com/jclsn/udemy-tv</url>
+  <url type="bugtracker">https://github.com/jclsn/udemy-tv/issues</url>
+  <name>Udemy TV</name>
+  <developer id="io.github.udemytv">
+    <name>Jan Claußen</name>
+  </developer>
+  <summary>Take your Udemy courses on the TV (unofficial)</summary>
+  <description>
+    <p>An unofficial Udemy app for Plasma Bigscreen. Browse your courses, play lectures with the
+    remote, switch between slides and speaker in lectures that have both, and buy new courses.</p>
+    <p>Udemy TV is not made or endorsed by Udemy, Inc.</p>
+  </description>
+  <categories>
+    <category>Education</category>
+  </categories>
+  <content_rating type="oars-1.1"/>
+  <recommends>
+    <control>tv-remote</control>
+  </recommends>
+  <provides>
+    <binary>udemy-tv</binary>
+  </provides>
+</component>

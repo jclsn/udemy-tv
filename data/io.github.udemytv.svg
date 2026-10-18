@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- SPDX-FileCopyrightText: 2026 Jan Claussen <jan.claussen10@web.de> -->
+  <!-- SPDX-License-Identifier: CC0-1.0 -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8441e6"/>
+      <stop offset="1" stop-color="#5022c3"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#bg)"/>
+  <!-- A screen with a play button, on a stand -->
+  <rect x="22" y="30" width="84" height="56" rx="8" fill="none" stroke="#ffffff" stroke-width="7"/>
+  <path d="M56 46 L76 58 L56 70 Z" fill="#ffffff"/>
+  <path d="M48 100 H80" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+  <path d="M64 86 V100" stroke="#ffffff" stroke-width="7"/>
+</svg>
