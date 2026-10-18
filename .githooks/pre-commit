@@ -1,0 +1,24 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2026 Jan Claussen <jan.claussen10@web.de>
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Refuses commits whose staged C++ files differ from what clang-format makes of them.
+# Enable with: git config core.hooksPath .githooks
+
+files=$(git diff --cached --name-only --diff-filter=ACMR -- '*.cpp' '*.h' | grep -v '^3rdparty/')
+[ -z "$files" ] && exit 0
+
+if ! command -v clang-format >/dev/null 2>&1; then
+    echo "pre-commit: clang-format not found, cannot check formatting" >&2
+    exit 1
+fi
+
+status=0
+for file in $files; do
+    # Check the staged version, not the working tree
+    if ! git show ":$file" | clang-format --assume-filename="$file" --dry-run --Werror >/dev/null 2>&1; then
+        echo "pre-commit: $file is not formatted; run: clang-format -i $file" >&2
+        status=1
+    fi
+done
+exit $status
