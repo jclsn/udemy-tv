@@ -1,0 +1,56 @@
+// SPDX-FileCopyrightText: 2025 Devin Lin <devin@kde.org>
+// SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
+
+
+import QtQuick
+import QtQuick.Templates as T
+import QtQuick.Layouts
+
+import org.kde.kirigami as Kirigami
+
+T.ItemDelegate {
+    id: root
+
+    /*!
+       \brief Whether the delegate should be visually raised over the view.
+
+       \default true
+     */
+    property bool raisedBackground: true
+
+    verticalPadding: Units.verticalPadding
+    horizontalPadding: Units.horizontalPadding
+    leftPadding: horizontalPadding
+    rightPadding: horizontalPadding
+    topPadding: verticalPadding
+    bottomPadding: verticalPadding
+
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
+                            implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset,
+                             implicitContentHeight + topPadding + bottomPadding,
+                             implicitIndicatorHeight + topPadding + bottomPadding)
+
+    spacing: Kirigami.Units.smallSpacing
+
+    topInset: TableView.view ? 0 : Math.ceil(Kirigami.Units.mediumSpacing / 2)
+    bottomInset: TableView.view ? 0 : Math.ceil(Kirigami.Units.mediumSpacing / 2)
+    leftInset: TableView.view ? 0 : Kirigami.Units.smallSpacing
+    rightInset: TableView.view ? 0 : Kirigami.Units.smallSpacing
+
+    focusPolicy: Qt.StrongFocus
+    hoverEnabled: true
+    background: DelegateBackground {
+        control: root
+        raisedBackground: root.raisedBackground
+        alternateBackgroundColor: true
+    }
+
+    icon {
+        width: Kirigami.Units.iconSizes.medium
+        height: Kirigami.Units.iconSizes.medium
+    }
+
+    Layout.fillWidth: true
+
+}

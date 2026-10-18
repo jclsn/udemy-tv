@@ -1,0 +1,132 @@
+// SPDX-FileCopyrightText: 2025 Devin Lin <devin@kde.org>
+// SPDX-License-Identifier: LGPL-2.0-or-later
+
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Templates as T
+
+import org.kde.kirigami as Kirigami
+
+/*!
+   \brief A modal panel that slides in from the right to show contextual options.
+ */
+T.Popup {
+    id: root
+
+    /*!
+       \brief This property holds item to focus when the context drawer opens.
+       \default content
+     */
+    property var openFocusItem: content
+
+    property alias header: headerControl.contentItem
+    property alias content: contentControl.contentItem
+
+    modal: true
+    BackHandler.enabled: root.visible
+    BackHandler.onActivated: root.close()
+
+    Kirigami.Theme.inherit: false
+    Kirigami.Theme.colorSet: Kirigami.Theme.View
+
+    parent: T.Overlay.overlay
+    height: parent ? parent.height : null
+    width: Math.min(parent ? parent.width : 0, Kirigami.Units.gridUnit * 30, Math.max(Kirigami.Units.gridUnit * 25, Math.round(parent ? (parent.width * 0.3) : 0)))
+
+    topPadding: 0
+    bottomPadding: 0
+    leftPadding: 0
+    rightPadding: 0
+
+    y: 0
+
+    onOpened: root.openFocusItem.forceActiveFocus();
+
+    enter: Transition {
+        SequentialAnimation {
+            NumberAnimation {
+                property: "x"
+                duration: 400
+                easing.type: Easing.InOutCubic
+                from: (root.parent ? root.parent.width : 0); to: (root.parent ? root.parent.width : 0) - root.width
+            }
+            // Make sure it's anchored to the right of the screen
+            ScriptAction { script: root.x = Qt.binding(() => ((root.parent ? root.parent.width : 0) - root.width)); }
+        }
+    }
+
+    exit: Transition {
+        NumberAnimation {
+            property: "x"
+            duration: 400
+            easing.type: Easing.InOutCubic
+            to: (root.parent ? root.parent.width : 0); from: (root.parent ? root.parent.width : 0) - root.width
+        }
+    }
+
+    T.Overlay.modal: Rectangle {
+        color: Qt.rgba(0,0,0,0.4)
+        Behavior on opacity {
+            OpacityAnimator {
+                duration: Kirigami.Units.longDuration
+            }
+        }
+    }
+
+    background: Item {
+        Rectangle {
+            id: frame
+            anchors.fill: parent
+            color: Kirigami.Theme.backgroundColor
+        }
+
+        // Shadow cast onto the content to the left
+        Rectangle {
+            width: Kirigami.Units.largeSpacing * 2
+            anchors.top: parent.top
+            anchors.right: frame.left
+            anchors.bottom: parent.bottom
+            opacity: 0.25
+
+            gradient: Gradient {
+                orientation: Gradient.Horizontal
+                GradientStop { position: 0.0; color: 'transparent' }
+                GradientStop { position: 1.0; color: 'black' }
+            }
+        }
+    }
+
+    contentItem: ColumnLayout {
+        spacing: 0
+
+        T.Control {
+            id: headerControl
+            visible: contentItem
+            implicitWidth: implicitContentWidth + leftPadding + rightPadding
+            implicitHeight: implicitContentHeight + topPadding + bottomPadding
+
+            topPadding: Kirigami.Units.gridUnit
+            bottomPadding: Kirigami.Units.gridUnit
+            leftPadding: Kirigami.Units.gridUnit
+            rightPadding: Kirigami.Units.gridUnit
+
+            Layout.fillWidth: true
+
+            background: Rectangle {
+                color: Kirigami.Theme.alternateBackgroundColor
+            }
+
+            contentItem: null
+        }
+        T.Control {
+            id: contentControl
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            topPadding: Kirigami.Units.gridUnit
+            bottomPadding: Kirigami.Units.gridUnit
+            leftPadding: Kirigami.Units.gridUnit
+            rightPadding: Kirigami.Units.gridUnit
+        }
+    }
+}
