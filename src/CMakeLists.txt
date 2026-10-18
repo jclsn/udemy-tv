@@ -7,6 +7,8 @@ qt_add_executable(udemy-tv
     captionparser.h
     captiontrack.cpp
     captiontrack.h
+    coursedetails.cpp
+    coursedetails.h
     courselistmodel.cpp
     courselistmodel.h
     coursesession.cpp

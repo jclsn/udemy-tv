@@ -152,6 +152,106 @@ QByteArray prices(const QUrlQuery &query)
 
     return json(QJsonObject{{QStringLiteral("courses"), result}});
 }
+
+// What a course page tells about a sample course
+QByteArray courseDetails(qint64 courseId)
+{
+    QJsonObject course;
+    const QJsonArray courses = QJsonDocument::fromJson(fixture(QStringLiteral("search.json")))
+                                   .object()
+                                   .value(u"results")
+                                   .toArray();
+
+    for (const QJsonValue &value : courses) {
+        if (value.toObject().value(u"id").toInteger() == courseId) {
+            course = value.toObject();
+        }
+    }
+
+    const QString headline = course.value(u"headline").toString(QStringLiteral("A sample course"));
+
+    return json(QJsonObject{
+        {QStringLiteral("id"), courseId},
+        {QStringLiteral("description"),
+         QStringLiteral("<p><strong>%1.</strong></p>"
+                        "<p>This sample course shows what a course page looks like on the big "
+                        "screen. Real courses show the description their instructor wrote, "
+                        "often several pages long.</p>"
+                        "<ul><li>Short videos you can watch from the sofa</li>"
+                        "<li>Slides next to the speaker</li>"
+                        "<li>Captions in several languages</li></ul>"
+                        "<p>Enroll to keep your place on every device.</p>")
+             .arg(headline)},
+        {QStringLiteral("objectives"),
+         QJsonArray{QStringLiteral("Understand the ideas behind every tool you use"),
+                    QStringLiteral("Build three projects from start to finish"),
+                    QStringLiteral("Find and fix problems on your own"),
+                    QStringLiteral("Know where to go next")}},
+        {QStringLiteral("prerequisites"),
+         QJsonArray{QStringLiteral("No experience needed"),
+                    QStringLiteral("A computer for the exercises")}},
+        {QStringLiteral("target_audiences"),
+         QJsonArray{QStringLiteral("Beginners who want a guided start"),
+                    QStringLiteral("Anyone who learns best by doing")}},
+        {QStringLiteral("locale"),
+         QJsonObject{{QStringLiteral("simple_english_title"), QStringLiteral("English")}}},
+        {QStringLiteral("caption_languages"),
+         QJsonArray{QStringLiteral("English"), QStringLiteral("Deutsch [Auto]")}},
+        {QStringLiteral("last_update_date"), QStringLiteral("2026-09-01")},
+        {QStringLiteral("visible_instructors"), course.value(u"visible_instructors").toArray()},
+    });
+}
+
+// The outline of the sample curriculum, as course pages show it before buying
+QByteArray landingCurriculum()
+{
+    const QJsonArray items = QJsonDocument::fromJson(fixture(QStringLiteral("curriculum.json")))
+                                 .object()
+                                 .value(u"results")
+                                 .toArray();
+    QJsonArray sections;
+    QJsonObject section;
+    int lectures = 0;
+    double length = 0;
+
+    for (const QJsonValue &value : items) {
+        const QJsonObject item = value.toObject();
+
+        if (item.value(u"_class").toString() == u"chapter") {
+            if (!section.isEmpty()) {
+                sections.append(section);
+            }
+
+            section = QJsonObject{{QStringLiteral("title"), item.value(u"title")},
+                                  {QStringLiteral("lecture_count"), 0},
+                                  {QStringLiteral("content_length"), 0}};
+            continue;
+        }
+
+        const double duration =
+            item.value(u"asset").toObject().value(u"time_estimation").toDouble();
+        section.insert(QStringLiteral("lecture_count"),
+                       section.value(u"lecture_count").toInt() + 1);
+        section.insert(QStringLiteral("content_length"),
+                       section.value(u"content_length").toDouble() + duration);
+        ++lectures;
+        length += duration;
+    }
+
+    if (!section.isEmpty()) {
+        sections.append(section);
+    }
+
+    return json(QJsonObject{
+        {QStringLiteral("curriculum_context"),
+         QJsonObject{
+             {QStringLiteral("data"),
+              QJsonObject{{QStringLiteral("sections"), sections},
+                          {QStringLiteral("num_of_published_lectures"), lectures},
+                          {QStringLiteral("estimated_content_length_in_seconds"), length}}}}},
+    });
+}
+
 }
 
 DemoBackend::Response
@@ -166,6 +266,9 @@ DemoBackend::handle(const QString &method, const QUrl &url, const QByteArray &bo
         QStringLiteral("^/users/me/subscribed-courses/(\\d+)/progress/$"));
     static const QRegularExpression curriculumPath(
         QStringLiteral("^/courses/(\\d+)/subscriber-curriculum-items/$"));
+    static const QRegularExpression coursePath(QStringLiteral("^/courses/(\\d+)/$"));
+    static const QRegularExpression landingPath(
+        QStringLiteral("^/course-landing-components/(\\d+)/me/$"));
 
     if (method == u"POST" && url.path() == u"/api/2024-01/graphql/") {
         return {200, searchResults(body)};
@@ -208,6 +311,14 @@ DemoBackend::handle(const QString &method, const QUrl &url, const QByteArray &bo
 
     if (path == u"/users/me/subscribed-courses-collections/") {
         return {200, fixture(QStringLiteral("collections.json"))};
+    }
+
+    if (const auto match = coursePath.match(path); match.hasMatch()) {
+        return {200, courseDetails(match.captured(1).toLongLong())};
+    }
+
+    if (landingPath.match(path).hasMatch()) {
+        return {200, landingCurriculum()};
     }
 
     if (curriculumPath.match(path).hasMatch()) {
