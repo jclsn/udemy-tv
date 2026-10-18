@@ -51,6 +51,7 @@ if(NOT USE_SYSTEM_BIGSCREEN_UI)
     set(KDE_INSTALL_QMLDIR "${_system_qmldir}")
 endif()
 
+add_subdirectory(src)
 add_subdirectory(data)
 
 if(BUILD_TESTING)
