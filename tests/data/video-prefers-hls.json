@@ -1,0 +1,25 @@
+{
+  "title": "Intro",
+  "last_watched_second": 42,
+  "asset": {
+    "asset_type": "Video",
+    "time_estimation": 300,
+    "media_sources": [
+      {
+        "type": "video/mp4",
+        "src": "https://cdn/720.mp4",
+        "label": "720"
+      },
+      {
+        "type": "application/x-mpegURL",
+        "src": "https://cdn/index.m3u8",
+        "label": "auto"
+      },
+      {
+        "type": "video/mp4",
+        "src": "https://cdn/1080.mp4",
+        "label": "1080"
+      }
+    ]
+  }
+}

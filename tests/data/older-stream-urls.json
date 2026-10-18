@@ -1,0 +1,20 @@
+{
+  "asset": {
+    "asset_type": "Video",
+    "length": 61,
+    "stream_urls": {
+      "Video": [
+        {
+          "type": "video/mp4",
+          "file": "https://cdn/360.mp4",
+          "label": "360"
+        },
+        {
+          "type": "video/mp4",
+          "file": "https://cdn/720.mp4",
+          "label": "720"
+        }
+      ]
+    }
+  }
+}

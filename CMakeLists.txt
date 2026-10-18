@@ -53,5 +53,9 @@ endif()
 
 add_subdirectory(data)
 
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
+
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 

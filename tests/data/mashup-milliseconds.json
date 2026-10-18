@@ -1,0 +1,24 @@
+{
+  "asset": {
+    "asset_type": "VideoMashup",
+    "time_estimation": 120,
+    "media_sources": [
+      {
+        "type": "application/x-mpegURL",
+        "src": "https://cdn/v.m3u8"
+      }
+    ],
+    "data": {
+      "slide_timeline": [
+        {
+          "time": 0,
+          "page": 1
+        },
+        {
+          "time": 45000,
+          "page": 2
+        }
+      ]
+    }
+  }
+}

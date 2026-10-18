@@ -1,0 +1,12 @@
+{
+  "asset": {
+    "asset_type": "Video",
+    "course_is_drmed": true,
+    "media_sources": [
+      {
+        "type": "application/x-mpegURL",
+        "src": "https://cdn/index.m3u8"
+      }
+    ]
+  }
+}

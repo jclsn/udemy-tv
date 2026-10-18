@@ -1,0 +1,9 @@
+{
+  "asset": {
+    "asset_type": "Video",
+    "media_license_token": "abc",
+    "media_sources": [
+      {"type": "application/x-mpegURL", "src": "https://cdn/index.m3u8", "label": "auto"}
+    ]
+  }
+}

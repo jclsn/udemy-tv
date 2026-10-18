@@ -1,0 +1,13 @@
+{
+  "asset": {
+    "asset_type": "Video",
+    "course_is_drmed": true,
+    "media_sources": [
+      {
+        "type": "application/x-mpegURL",
+        "src": "https://hls-enc-c.udemycdn.com/cmaf/1/2/cbcs/index.m3u8",
+        "label": "auto"
+      }
+    ]
+  }
+}

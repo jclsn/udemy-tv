@@ -1,0 +1,12 @@
+{
+  "asset": {
+    "asset_type": "Video",
+    "media_license_token": "abc",
+    "media_sources": [
+      {
+        "type": "application/dash+xml",
+        "src": "https://cdn/manifest.mpd"
+      }
+    ]
+  }
+}

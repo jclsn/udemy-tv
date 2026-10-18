@@ -1,0 +1,9 @@
+{
+  "asset": {
+    "asset_type": "Presentation",
+    "slide_urls": [
+      "https://cdn/1.png",
+      "https://cdn/2.png"
+    ]
+  }
+}

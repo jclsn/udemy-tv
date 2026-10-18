@@ -1,0 +1,28 @@
+{
+  "asset": {
+    "asset_type": "Video",
+    "media_sources": [
+      {
+        "type": "video/mp4",
+        "src": "https://cdn/v.mp4"
+      }
+    ],
+    "captions": [
+      {
+        "locale_id": "en_US",
+        "url": "https://cdn/auto.vtt",
+        "video_label": "English [Auto]",
+        "source": "auto"
+      },
+      {
+        "locale_id": "de_DE",
+        "url": "https://cdn/de.vtt",
+        "title": "Deutsch",
+        "source": "manual"
+      },
+      {
+        "locale_id": "fr_FR"
+      }
+    ]
+  }
+}
