@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: 2026 Jan Claussen <jan.claussen10@web.de>
+# SPDX-License-Identifier: CC0-1.0
+#
+# Builds from a source archive of this repository, made with:
+#   git archive --prefix=udemy-tv-0.1.0/ -o packaging/arch/udemy-tv-0.1.0.tar.gz HEAD
+
+pkgname=udemy-tv
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Unofficial Udemy app for Plasma Bigscreen'
+arch=(x86_64 aarch64)
+url='https://github.com/jclsn/udemy-tv'
+license=(GPL-3.0-or-later)
+depends=(
+  gcc-libs
+  glibc
+  hicolor-icon-theme
+  kcolorscheme
+  kconfig
+  kcoreaddons
+  ki18n
+  kirigami
+  qqc2-desktop-style
+  qt6-base
+  qt6-declarative
+  qt6-multimedia
+  qt6-webchannel
+  qt6-webengine
+)
+makedepends=(
+  cmake
+  extra-cmake-modules
+  ninja
+)
+optdepends=('chromium: Widevine module for copy-protected lectures')
+source=("$pkgname-$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cmake -B build -S "$pkgname-$pkgver" -G Ninja \
+    -DCMAKE_BUILD_TYPE=None \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_TESTING=ON
+  cmake --build build
+}
+
+check() {
+  QT_QPA_PLATFORM=offscreen ctest --test-dir build --output-on-failure
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+}

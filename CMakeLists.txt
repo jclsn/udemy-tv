@@ -60,3 +60,19 @@ endif()
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
+# Debian packages, made with: cpack -G DEB (configure with -DCMAKE_INSTALL_PREFIX=/usr)
+set(CPACK_PACKAGE_NAME "udemy-tv")
+set(CPACK_PACKAGE_VENDOR "Jan Claussen")
+set(CPACK_PACKAGE_CONTACT "Jan Claussen <jan.claussen10@web.de>")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Unofficial Udemy app for Plasma Bigscreen")
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/jclsn/udemy-tv")
+set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+set(CPACK_DEBIAN_PACKAGE_SECTION "education")
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+# QML modules are loaded at run time, so shlibdeps cannot find them
+set(CPACK_DEBIAN_PACKAGE_DEPENDS
+    "qml6-module-org-kde-kirigami, qml6-module-qtwebengine, qml6-module-qtwebchannel, \
+qml6-module-qtmultimedia, qml6-module-qtquick-layouts, qml6-module-qtquick-templates, \
+qml6-module-qtquick-effects, qml6-module-qtcore")
+set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "qml6-module-qtquick-pdf, qml6-module-org-kde-desktop")
+include(CPack)

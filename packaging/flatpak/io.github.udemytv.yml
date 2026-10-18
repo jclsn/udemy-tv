@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: 2026 Jan Claussen <jan.claussen10@web.de>
+# SPDX-License-Identifier: CC0-1.0
+
+id: io.github.udemytv
+runtime: org.kde.Platform
+runtime-version: '6.11'
+sdk: org.kde.Sdk
+base: io.qt.qtwebengine.BaseApp
+base-version: '6.11'
+command: udemy-tv
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --device=dri
+cleanup-commands:
+  - /app/cleanup-BaseApp.sh
+modules:
+  - name: udemy-tv
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      - -DBUILD_TESTING=OFF
+    sources:
+      - type: dir
+        path: ../..
+        skip:
+          - build
+          - packaging/arch
