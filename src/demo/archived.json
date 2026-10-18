@@ -1,0 +1,38 @@
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "_class": "course",
+      "id": 4009,
+      "title": "Introduction to Web Design (2019 Edition)",
+      "url": "/course/web-design-intro-2019/learn/",
+      "published_title": "web-design-intro-2019",
+      "headline": "HTML and CSS basics for complete beginners",
+      "image_240x135": "qrc:/demo/images/shell.jpg",
+      "image_480x270": "qrc:/demo/images/shell.jpg",
+      "image_750x422": "qrc:/demo/images/shell.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Chris Doe",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 100,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "3 total hours",
+      "avg_rating": 4.6,
+      "avg_rating_recent": 4.6,
+      "num_reviews": 1200,
+      "instructional_level": "All Levels",
+      "num_subscribers": 24000,
+      "is_paid": true
+    }
+  ]
+}

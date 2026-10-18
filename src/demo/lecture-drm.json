@@ -1,0 +1,22 @@
+{
+  "_class": "lecture",
+  "title": "Protected",
+  "description": "",
+  "last_watched_second": 0,
+  "asset": {
+    "_class": "asset",
+    "asset_type": "Video",
+    "time_estimation": 360,
+    "status": 1,
+    "course_is_drmed": true,
+    "media_license_token": "demo-license-token",
+    "media_sources": [
+      {
+        "type": "application/dash+xml",
+        "src": "https://example.invalid/manifest.mpd",
+        "label": "auto"
+      }
+    ],
+    "captions": []
+  }
+}

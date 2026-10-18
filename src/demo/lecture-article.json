@@ -1,0 +1,13 @@
+{
+  "_class": "lecture",
+  "title": "Cheat sheet",
+  "description": "",
+  "last_watched_second": 0,
+  "asset": {
+    "_class": "asset",
+    "asset_type": "Article",
+    "time_estimation": 240,
+    "status": 1,
+    "body": "<h2>Cheat sheet</h2><p>Everything from this section on one page, to keep next to you while you practice.</p><h3>Building blocks</h3><ul><li><b>Items</b> are the visual pieces of an interface.</li><li><b>Properties</b> describe how an item looks and behaves.</li><li><b>Bindings</b> keep a property up to date with others.</li></ul><h3>Keyboard and remote</h3><p>On a TV everything is reached with the arrow keys. Give every page one item with <code>focus: true</code>, and let <i>KeyNavigation</i> do the rest.</p><h3>Further reading</h3><ol><li>The Qt Quick documentation</li><li>The Kirigami tutorial</li><li>The Plasma Bigscreen developer guide</li></ol><p>Press <b>Back</b> to return to the course, or <b>Down</b> to keep reading.</p>"
+  }
+}

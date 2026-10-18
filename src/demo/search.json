@@ -1,0 +1,340 @@
+{
+  "count": 9,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "_class": "course",
+      "id": 5001,
+      "title": "Blender 4 for Absolute Beginners",
+      "url": "/course/blender-4-beginners/",
+      "published_title": "blender-4-beginners",
+      "headline": "Model, light and render your first 3D scenes",
+      "image_240x135": "qrc:/demo/images/volna.jpg",
+      "image_480x270": "qrc:/demo/images/volna.jpg",
+      "image_750x422": "qrc:/demo/images/volna.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Noor Haddad",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.7,
+      "avg_rating_recent": 4.7,
+      "num_reviews": 21045,
+      "instructional_level": "All Levels",
+      "num_subscribers": 130000,
+      "is_paid": true,
+      "price": "€19,99",
+      "price_detail": {
+        "amount": 19.99,
+        "currency": "EUR",
+        "price_string": "€19,99"
+      }
+    },
+    {
+      "_class": "course",
+      "id": 5002,
+      "title": "Machine Learning A to Z with Python",
+      "url": "/course/ml-a-to-z-python/",
+      "published_title": "ml-a-to-z-python",
+      "headline": "From regression to neural networks, step by step",
+      "image_240x135": "qrc:/demo/images/honeywave.jpg",
+      "image_480x270": "qrc:/demo/images/honeywave.jpg",
+      "image_750x422": "qrc:/demo/images/honeywave.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Priya Raman",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.5,
+      "avg_rating_recent": 4.5,
+      "num_reviews": 48210,
+      "instructional_level": "All Levels",
+      "num_subscribers": 410000,
+      "is_paid": true,
+      "price": "€24,99",
+      "price_detail": {
+        "amount": 24.99,
+        "currency": "EUR",
+        "price_string": "€24,99"
+      }
+    },
+    {
+      "_class": "course",
+      "id": 5003,
+      "title": "Embedded Linux with Yocto",
+      "url": "/course/embedded-linux-yocto/",
+      "published_title": "embedded-linux-yocto",
+      "headline": "Build your own distribution for any board",
+      "image_240x135": "qrc:/demo/images/flow.jpg",
+      "image_480x270": "qrc:/demo/images/flow.jpg",
+      "image_750x422": "qrc:/demo/images/flow.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Mara Lindqvist",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.6,
+      "avg_rating_recent": 4.6,
+      "num_reviews": 2290,
+      "instructional_level": "All Levels",
+      "num_subscribers": 15500,
+      "is_paid": true,
+      "price": "€17,99",
+      "price_detail": {
+        "amount": 17.99,
+        "currency": "EUR",
+        "price_string": "€17,99"
+      }
+    },
+    {
+      "_class": "course",
+      "id": 5004,
+      "title": "Learn KDE Plasma Development",
+      "url": "/course/kde-plasma-development/",
+      "published_title": "kde-plasma-development",
+      "headline": "Write widgets, KCMs and apps with Kirigami",
+      "image_240x135": "qrc:/demo/images/coast.jpg",
+      "image_480x270": "qrc:/demo/images/coast.jpg",
+      "image_750x422": "qrc:/demo/images/coast.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Tomás Ferreira",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.8,
+      "avg_rating_recent": 4.8,
+      "num_reviews": 930,
+      "instructional_level": "All Levels",
+      "num_subscribers": 7400,
+      "is_paid": true,
+      "price": "€14,99",
+      "price_detail": {
+        "amount": 14.99,
+        "currency": "EUR",
+        "price_string": "€14,99"
+      }
+    },
+    {
+      "_class": "course",
+      "id": 5005,
+      "title": "The Complete Guitar Course",
+      "url": "/course/complete-guitar-course/",
+      "published_title": "complete-guitar-course",
+      "headline": "From your first chord to playing songs with friends",
+      "image_240x135": "qrc:/demo/images/scarlettree.jpg",
+      "image_480x270": "qrc:/demo/images/scarlettree.jpg",
+      "image_750x422": "qrc:/demo/images/scarlettree.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Sam O'Brien",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.6,
+      "avg_rating_recent": 4.6,
+      "num_reviews": 11980,
+      "instructional_level": "Beginner Level",
+      "num_subscribers": 98000,
+      "is_paid": true,
+      "price": "€22,99",
+      "price_detail": {
+        "amount": 22.99,
+        "currency": "EUR",
+        "price_string": "€22,99"
+      }
+    },
+    {
+      "_class": "course",
+      "id": 5006,
+      "title": "Landscape Photography Masterclass",
+      "url": "/course/landscape-photography-masterclass/",
+      "published_title": "landscape-photography-masterclass",
+      "headline": "Plan, shoot and edit stunning landscapes",
+      "image_240x135": "qrc:/demo/images/altai.jpg",
+      "image_480x270": "qrc:/demo/images/altai.jpg",
+      "image_750x422": "qrc:/demo/images/altai.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Jonas Weber",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.9,
+      "avg_rating_recent": 4.9,
+      "num_reviews": 4410,
+      "instructional_level": "All Levels",
+      "num_subscribers": 31000,
+      "is_paid": true,
+      "price": "€19,99",
+      "price_detail": {
+        "amount": 19.99,
+        "currency": "EUR",
+        "price_string": "€19,99"
+      }
+    },
+    {
+      "_class": "course",
+      "id": 5007,
+      "title": "Docker and Kubernetes: The Practical Guide",
+      "url": "/course/docker-kubernetes-practical/",
+      "published_title": "docker-kubernetes-practical",
+      "headline": "Containers for developers, from laptop to production",
+      "image_240x135": "qrc:/demo/images/mountain.jpg",
+      "image_480x270": "qrc:/demo/images/mountain.jpg",
+      "image_750x422": "qrc:/demo/images/mountain.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Lena Novak",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.7,
+      "avg_rating_recent": 4.7,
+      "num_reviews": 30500,
+      "instructional_level": "All Levels",
+      "num_subscribers": 250000,
+      "is_paid": true,
+      "price": "€21,99",
+      "price_detail": {
+        "amount": 21.99,
+        "currency": "EUR",
+        "price_string": "€21,99"
+      }
+    },
+    {
+      "_class": "course",
+      "id": 5008,
+      "title": "Astronomy for Everyone",
+      "url": "/course/astronomy-for-everyone/",
+      "published_title": "astronomy-for-everyone",
+      "headline": "Find your way around the night sky",
+      "image_240x135": "qrc:/demo/images/milkyway.jpg",
+      "image_480x270": "qrc:/demo/images/milkyway.jpg",
+      "image_750x422": "qrc:/demo/images/milkyway.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Henrik Aalto",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.5,
+      "avg_rating_recent": 4.5,
+      "num_reviews": 1880,
+      "instructional_level": "All Levels",
+      "num_subscribers": 19000,
+      "is_paid": true,
+      "price": "€12,99",
+      "price_detail": {
+        "amount": 12.99,
+        "currency": "EUR",
+        "price_string": "€12,99"
+      }
+    },
+    {
+      "_class": "course",
+      "id": 4004,
+      "title": "Python for Data Analysis: Hands-On Bootcamp",
+      "url": "/course/python-data-analysis-bootcamp/",
+      "published_title": "python-data-analysis-bootcamp",
+      "headline": "pandas, NumPy and Matplotlib from your first notebook to a finished report",
+      "image_240x135": "qrc:/demo/images/honeywave.jpg",
+      "image_480x270": "qrc:/demo/images/honeywave.jpg",
+      "image_750x422": "qrc:/demo/images/honeywave.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Priya Raman",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.5,
+      "avg_rating_recent": 4.5,
+      "num_reviews": 15422,
+      "instructional_level": "All Levels",
+      "num_subscribers": 24000,
+      "is_paid": true,
+      "price": "€19,99",
+      "price_detail": {
+        "amount": 19.99,
+        "currency": "EUR",
+        "price_string": "€19,99"
+      }
+    }
+  ]
+}

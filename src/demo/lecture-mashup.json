@@ -1,0 +1,54 @@
+{
+  "_class": "lecture",
+  "title": "Lecture",
+  "description": "<p>Slides with the speaker.</p>",
+  "last_watched_second": 0,
+  "asset": {
+    "_class": "asset",
+    "asset_type": "VideoMashup",
+    "time_estimation": 596,
+    "status": 1,
+    "course_is_drmed": false,
+    "media_license_token": null,
+    "media_sources": [
+      {
+        "type": "application/x-mpegURL",
+        "src": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+        "label": "auto"
+      }
+    ],
+    "captions": [
+      {
+        "_class": "caption",
+        "locale_id": "en_US",
+        "url": "qrc:/demo/captions-en.vtt",
+        "video_label": "English",
+        "title": "English",
+        "source": "manual",
+        "status": 1
+      }
+    ],
+    "slides": [
+      {
+        "time": 0,
+        "url": "qrc:/demo/slides/slide1.svg"
+      },
+      {
+        "time": 20,
+        "url": "qrc:/demo/slides/slide2.svg"
+      },
+      {
+        "time": 60,
+        "url": "qrc:/demo/slides/slide3.svg"
+      },
+      {
+        "time": 120,
+        "url": "qrc:/demo/slides/slide4.svg"
+      },
+      {
+        "time": 240,
+        "url": "qrc:/demo/slides/slide5.svg"
+      }
+    ]
+  }
+}

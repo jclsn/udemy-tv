@@ -1,0 +1,118 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "_class": "course",
+      "id": 5001,
+      "title": "Blender 4 for Absolute Beginners",
+      "url": "/course/blender-4-beginners/",
+      "published_title": "blender-4-beginners",
+      "headline": "Model, light and render your first 3D scenes",
+      "image_240x135": "qrc:/demo/images/volna.jpg",
+      "image_480x270": "qrc:/demo/images/volna.jpg",
+      "image_750x422": "qrc:/demo/images/volna.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Noor Haddad",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.7,
+      "avg_rating_recent": 4.7,
+      "num_reviews": 21045,
+      "instructional_level": "All Levels",
+      "num_subscribers": 130000,
+      "is_paid": true,
+      "price": "€19,99",
+      "price_detail": {
+        "amount": 19.99,
+        "currency": "EUR",
+        "price_string": "€19,99"
+      }
+    },
+    {
+      "_class": "course",
+      "id": 5002,
+      "title": "Machine Learning A to Z with Python",
+      "url": "/course/ml-a-to-z-python/",
+      "published_title": "ml-a-to-z-python",
+      "headline": "From regression to neural networks, step by step",
+      "image_240x135": "qrc:/demo/images/honeywave.jpg",
+      "image_480x270": "qrc:/demo/images/honeywave.jpg",
+      "image_750x422": "qrc:/demo/images/honeywave.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Priya Raman",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.5,
+      "avg_rating_recent": 4.5,
+      "num_reviews": 48210,
+      "instructional_level": "All Levels",
+      "num_subscribers": 410000,
+      "is_paid": true,
+      "price": "€24,99",
+      "price_detail": {
+        "amount": 24.99,
+        "currency": "EUR",
+        "price_string": "€24,99"
+      }
+    },
+    {
+      "_class": "course",
+      "id": 5003,
+      "title": "Embedded Linux with Yocto",
+      "url": "/course/embedded-linux-yocto/",
+      "published_title": "embedded-linux-yocto",
+      "headline": "Build your own distribution for any board",
+      "image_240x135": "qrc:/demo/images/flow.jpg",
+      "image_480x270": "qrc:/demo/images/flow.jpg",
+      "image_750x422": "qrc:/demo/images/flow.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Mara Lindqvist",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-10T18:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "6.5 total hours",
+      "avg_rating": 4.6,
+      "avg_rating_recent": 4.6,
+      "num_reviews": 2290,
+      "instructional_level": "All Levels",
+      "num_subscribers": 15500,
+      "is_paid": true,
+      "price": "€17,99",
+      "price_detail": {
+        "amount": 17.99,
+        "currency": "EUR",
+        "price_string": "€17,99"
+      }
+    }
+  ]
+}

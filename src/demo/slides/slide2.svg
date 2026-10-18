@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" font-family="Noto Sans, sans-serif">
+<!-- SPDX-FileCopyrightText: 2026 Jan Claussen <jan.claussen10@web.de> -->
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<rect width="1920" height="1080" fill="#ffffff"/>
+<rect width="1920" height="24" fill="#6d28d2"/>
+<text x="140" y="260" font-size="96" font-weight="700" fill="#2d2f31">Building blocks</text>
+<rect x="140" y="300" width="220" height="10" fill="#6d28d2"/>
+<circle cx="190" cy="455" r="14" fill="#6d28d2"/><text x="230" y="470" font-size="54" fill="#2d2f31">Items and properties</text><circle cx="190" cy="585" r="14" fill="#6d28d2"/><text x="230" y="600" font-size="54" fill="#2d2f31">Bindings keep things in sync</text><circle cx="190" cy="715" r="14" fill="#6d28d2"/><text x="230" y="730" font-size="54" fill="#2d2f31">Layouts place items for you</text>
+<text x="1780" y="1020" font-size="36" fill="#6a6f73" text-anchor="end">2 / 5</text>
+</svg>

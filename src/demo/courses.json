@@ -1,0 +1,260 @@
+{
+  "count": 8,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "_class": "course",
+      "id": 4001,
+      "title": "The Linux Graphics Stack: From Pixels to Wayland",
+      "url": "/course/linux-graphics-stack/learn/",
+      "published_title": "linux-graphics-stack",
+      "headline": "Understand DRM, KMS, Mesa and Wayland compositors by building your own",
+      "image_240x135": "qrc:/demo/images/flow.jpg",
+      "image_480x270": "qrc:/demo/images/flow.jpg",
+      "image_750x422": "qrc:/demo/images/flow.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Mara Lindqvist",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 35,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-18T17:40:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "9 total hours",
+      "avg_rating": 4.8,
+      "avg_rating_recent": 4.8,
+      "num_reviews": 2310,
+      "instructional_level": "All Levels",
+      "num_subscribers": 24000,
+      "is_paid": true
+    },
+    {
+      "_class": "course",
+      "id": 4002,
+      "title": "Qt 6 and QML for Embedded Devices",
+      "url": "/course/qt6-qml-embedded/learn/",
+      "published_title": "qt6-qml-embedded",
+      "headline": "Build fluid touch and TV interfaces that run on small boards",
+      "image_240x135": "qrc:/demo/images/coast.jpg",
+      "image_480x270": "qrc:/demo/images/coast.jpg",
+      "image_750x422": "qrc:/demo/images/coast.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Tomás Ferreira",
+          "job_title": "Instructor"
+        },
+        {
+          "_class": "user",
+          "display_name": "Ines Okafor",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 72,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-16T20:10:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "11.5 total hours",
+      "avg_rating": 4.7,
+      "avg_rating_recent": 4.7,
+      "num_reviews": 1840,
+      "instructional_level": "All Levels",
+      "num_subscribers": 24000,
+      "is_paid": true
+    },
+    {
+      "_class": "course",
+      "id": 4003,
+      "title": "Modern C++20 Masterclass",
+      "url": "/course/modern-cpp20-masterclass/learn/",
+      "published_title": "modern-cpp20-masterclass",
+      "headline": "Concepts, ranges, coroutines and modules explained with real projects",
+      "image_240x135": "qrc:/demo/images/milkyway.jpg",
+      "image_480x270": "qrc:/demo/images/milkyway.jpg",
+      "image_750x422": "qrc:/demo/images/milkyway.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Henrik Aalto",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 100,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-09-30T08:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "22 total hours",
+      "avg_rating": 4.6,
+      "avg_rating_recent": 4.6,
+      "num_reviews": 9821,
+      "instructional_level": "All Levels",
+      "num_subscribers": 24000,
+      "is_paid": true
+    },
+    {
+      "_class": "course",
+      "id": 4004,
+      "title": "Python for Data Analysis: Hands-On Bootcamp",
+      "url": "/course/python-data-analysis-bootcamp/learn/",
+      "published_title": "python-data-analysis-bootcamp",
+      "headline": "pandas, NumPy and Matplotlib from your first notebook to a finished report",
+      "image_240x135": "qrc:/demo/images/honeywave.jpg",
+      "image_480x270": "qrc:/demo/images/honeywave.jpg",
+      "image_750x422": "qrc:/demo/images/honeywave.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Priya Raman",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-08-21T12:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "14 total hours",
+      "avg_rating": 4.5,
+      "avg_rating_recent": 4.5,
+      "num_reviews": 15422,
+      "instructional_level": "All Levels",
+      "num_subscribers": 24000,
+      "is_paid": true
+    },
+    {
+      "_class": "course",
+      "id": 4005,
+      "title": "Photography Fundamentals: Light, Composition and Color",
+      "url": "/course/photography-fundamentals/learn/",
+      "published_title": "photography-fundamentals",
+      "headline": "Take better pictures with any camera",
+      "image_240x135": "qrc:/demo/images/altai.jpg",
+      "image_480x270": "qrc:/demo/images/altai.jpg",
+      "image_750x422": "qrc:/demo/images/altai.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Jonas Weber",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 15,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-12T19:30:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "5 total hours",
+      "avg_rating": 4.7,
+      "avg_rating_recent": 4.7,
+      "num_reviews": 3120,
+      "instructional_level": "All Levels",
+      "num_subscribers": 24000,
+      "is_paid": true
+    },
+    {
+      "_class": "course",
+      "id": 4006,
+      "title": "Kubernetes in Practice",
+      "url": "/course/kubernetes-in-practice/learn/",
+      "published_title": "kubernetes-in-practice",
+      "headline": "Deploy, scale and debug real applications on a cluster",
+      "image_240x135": "qrc:/demo/images/mountain.jpg",
+      "image_480x270": "qrc:/demo/images/mountain.jpg",
+      "image_750x422": "qrc:/demo/images/mountain.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Lena Novak",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 0,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-07-01T09:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "8 total hours",
+      "avg_rating": 4.4,
+      "avg_rating_recent": 4.4,
+      "num_reviews": 870,
+      "instructional_level": "All Levels",
+      "num_subscribers": 24000,
+      "is_paid": true
+    },
+    {
+      "_class": "course",
+      "id": 4007,
+      "title": "Music Production with Open Source Tools",
+      "url": "/course/music-production-open-source/learn/",
+      "published_title": "music-production-open-source",
+      "headline": "Record, mix and master songs with Ardour, Carla and friends",
+      "image_240x135": "qrc:/demo/images/scarlettree.jpg",
+      "image_480x270": "qrc:/demo/images/scarlettree.jpg",
+      "image_750x422": "qrc:/demo/images/scarlettree.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Sam O'Brien",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 55,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-14T21:00:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "7 total hours",
+      "avg_rating": 4.8,
+      "avg_rating_recent": 4.8,
+      "num_reviews": 640,
+      "instructional_level": "All Levels",
+      "num_subscribers": 24000,
+      "is_paid": true
+    },
+    {
+      "_class": "course",
+      "id": 4008,
+      "title": "Rust from Scratch",
+      "url": "/course/rust-from-scratch/learn/",
+      "published_title": "rust-from-scratch",
+      "headline": "Ownership, traits and async without the headaches",
+      "image_240x135": "qrc:/demo/images/patak.jpg",
+      "image_480x270": "qrc:/demo/images/patak.jpg",
+      "image_750x422": "qrc:/demo/images/patak.jpg",
+      "visible_instructors": [
+        {
+          "_class": "user",
+          "display_name": "Aiko Tanaka",
+          "job_title": "Instructor"
+        }
+      ],
+      "completion_ratio": 8,
+      "num_published_lectures": 12,
+      "last_accessed_time": "2026-10-02T07:15:00Z",
+      "enrollment_time": "2026-01-05T10:00:00Z",
+      "archive_time": null,
+      "favorite_time": null,
+      "content_info": "16 total hours",
+      "avg_rating": 4.7,
+      "avg_rating_recent": 4.7,
+      "num_reviews": 5530,
+      "instructional_level": "All Levels",
+      "num_subscribers": 24000,
+      "is_paid": true
+    }
+  ]
+}

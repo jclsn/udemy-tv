@@ -1,0 +1,42 @@
+{
+  "_class": "lecture",
+  "title": "Lecture",
+  "description": "<p>A sample lecture.</p>",
+  "last_watched_second": 0,
+  "asset": {
+    "_class": "asset",
+    "asset_type": "Video",
+    "time_estimation": 734,
+    "status": 1,
+    "course_is_drmed": false,
+    "media_license_token": null,
+    "thumbnail_url": "qrc:/demo/images/flow.jpg",
+    "media_sources": [
+      {
+        "type": "application/x-mpegURL",
+        "src": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+        "label": "auto"
+      }
+    ],
+    "captions": [
+      {
+        "_class": "caption",
+        "locale_id": "en_US",
+        "url": "qrc:/demo/captions-en.vtt",
+        "video_label": "English",
+        "title": "English",
+        "source": "manual",
+        "status": 1
+      },
+      {
+        "_class": "caption",
+        "locale_id": "de_DE",
+        "url": "qrc:/demo/captions-de.vtt",
+        "video_label": "Deutsch [Automatisch]",
+        "title": "Deutsch",
+        "source": "auto",
+        "status": 1
+      }
+    ]
+  }
+}
