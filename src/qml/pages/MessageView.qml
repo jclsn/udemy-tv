@@ -56,7 +56,7 @@ FocusScope {
             Layout.fillWidth: true
             visible: text.length > 0
             text: root.explanation
-            color: Style.border
+            color: Style.bandSubtleText
             wrapMode: Text.Wrap
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: 21

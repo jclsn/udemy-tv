@@ -187,7 +187,7 @@ BigscreenUI.Page {
                     Layout.fillWidth: true
                     visible: session.totalDuration.length > 0
                     text: i18n("%1 in total", session.totalDuration)
-                    color: Style.border
+                    color: Style.bandSubtleText
                     font.pixelSize: 17
                 }
 

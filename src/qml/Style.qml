@@ -24,6 +24,7 @@ QtObject {
 
     // The bands with white text, such as the one with "My learning"
     readonly property color band: dark ? "#262838" : "#1d1e27"
+    readonly property color bandSubtleText: "#d1d7dc"
 
     // Focus rings and links, which need to stand out on the background
     readonly property color accent: dark ? purpleLight : purple
