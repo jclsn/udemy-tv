@@ -7,7 +7,10 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QIcon>
+#include <QNetworkAccessManager>
+#include <QNetworkDiskCache>
 #include <QQmlApplicationEngine>
+#include <QQmlNetworkAccessManagerFactory>
 #include <QQuickStyle>
 #include <QStandardPaths>
 #include <QVersionNumber>
@@ -107,6 +110,24 @@ bool setChromiumFlags()
     return !widevine.isEmpty();
 }
 
+// Pictures of courses and people do not change (Udemy's CDN allows caching them for ten
+// years), so they are kept on disk instead of downloaded on every start
+class CachingNetworkFactory : public QQmlNetworkAccessManagerFactory
+{
+public:
+    QNetworkAccessManager *create(QObject *parent) override
+    {
+        auto manager = new QNetworkAccessManager(parent);
+        auto cache = new QNetworkDiskCache(manager);
+        cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation)
+                                 + QStringLiteral("/images"));
+        cache->setMaximumCacheSize(256 * 1024 * 1024);
+        manager->setCache(cache);
+
+        return manager;
+    }
+};
+
 // The app was called udemy-bigscreen before; keep the user's login, settings and cache
 void migrateFromOldName()
 {
@@ -197,7 +218,9 @@ int main(int argc, char *argv[])
         client.useAccessToken(token);
     }
 
+    CachingNetworkFactory networkFactory;
     QQmlApplicationEngine engine;
+    engine.setNetworkAccessManagerFactory(&networkFactory);
 #ifdef UDEMYTV_PRIVATE_QMLDIR
     engine.addImportPath(QStringLiteral(UDEMYTV_PRIVATE_QMLDIR));
 #endif
