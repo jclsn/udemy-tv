@@ -166,7 +166,7 @@ FocusScope {
         width: hint.implicitWidth + Kirigami.Units.gridUnit * 2
         height: hint.implicitHeight + Kirigami.Units.gridUnit
         radius: height / 2
-        color: Qt.alpha(Style.dark, 0.9)
+        color: Qt.alpha(Style.band, 0.9)
 
         BigscreenUI.Label {
             id: hint

@@ -18,7 +18,7 @@ BigscreenUI.Page {
     signal businessRequested()
 
     background: Rectangle {
-        color: "white"
+        color: Style.background
     }
 
     BigscreenUI.BackHandler.enabled: visible
@@ -32,7 +32,7 @@ BigscreenUI.Page {
         Rectangle {
             Layout.fillHeight: true
             Layout.preferredWidth: parent.width * 0.45
-            color: Style.dark
+            color: Style.band
 
             Image {
                 anchors.fill: parent

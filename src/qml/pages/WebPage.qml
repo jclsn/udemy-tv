@@ -21,7 +21,7 @@ BigscreenUI.Page {
     signal closeRequested()
 
     background: Rectangle {
-        color: "white"
+        color: Style.background
     }
 
     // Back goes back in the page first, then leaves it
@@ -36,7 +36,7 @@ BigscreenUI.Page {
 
     header: Rectangle {
         implicitHeight: headerLayout.implicitHeight + Kirigami.Units.gridUnit * 1.5
-        color: Style.dark
+        color: Style.band
 
         RowLayout {
             id: headerLayout

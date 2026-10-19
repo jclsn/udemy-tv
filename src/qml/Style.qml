@@ -5,17 +5,30 @@ pragma Singleton
 
 import QtQuick
 
-// The parts of udemy.com's look that the color scheme can't carry
+// The parts of udemy.com's look that the color scheme can't carry, light or dark
 QtObject {
+    readonly property bool dark: AppTheme.dark
+
     readonly property color purple: "#6d28d2"
     readonly property color purpleDark: "#5022c3"
     readonly property color purpleLight: "#c0c4fc"
-    readonly property color text: "#2d2f31"
-    readonly property color subtleText: "#6a6f73"
-    readonly property color border: "#d1d7dc"
-    readonly property color surface: "#f7f9fa"
-    readonly property color dark: "#1d1e27"
-    readonly property color ratingText: "#b4690e"
+
+    // Pages, and boxes and cards on them
+    readonly property color background: dark ? "#16161d" : "#ffffff"
+    readonly property color card: dark ? "#1f2029" : "#ffffff"
+    readonly property color surface: dark ? "#1f2029" : "#f7f9fa"
+    readonly property color border: dark ? "#3a3d4a" : "#d1d7dc"
+
+    readonly property color text: dark ? "#f7f9fa" : "#2d2f31"
+    readonly property color subtleText: dark ? "#b6bac4" : "#6a6f73"
+
+    // The bands with white text, such as the one with "My learning"
+    readonly property color band: dark ? "#262838" : "#1d1e27"
+
+    // Focus rings and links, which need to stand out on the background
+    readonly property color accent: dark ? purpleLight : purple
+
+    readonly property color ratingText: dark ? "#f69c08" : "#b4690e"
     readonly property color star: "#e59819"
 
     // Udemy sets big headings in a serif face

@@ -58,7 +58,7 @@ BigscreenUI.Page {
     }
 
     background: Rectangle {
-        color: "white"
+        color: Style.background
     }
 
     // The band behind the purchase card, scrolling along with the one in the text
@@ -67,7 +67,7 @@ BigscreenUI.Page {
         y: -reader.contentY
         width: root.width - reader.width
         height: band.height
-        color: Style.dark
+        color: Style.band
     }
 
     Flickable {
@@ -101,7 +101,7 @@ BigscreenUI.Page {
 
                 Layout.fillWidth: true
                 implicitHeight: bandLayout.implicitHeight + Kirigami.Units.gridUnit * 5
-                color: Style.dark
+                color: Style.band
 
                 ColumnLayout {
                     id: bandLayout
@@ -201,7 +201,7 @@ BigscreenUI.Page {
                     visible: details.objectives.length > 0
                     implicitHeight: learnLayout.implicitHeight + Kirigami.Units.gridUnit * 3
                     border.color: Style.border
-                    color: "white"
+                    color: Style.card
 
                     ColumnLayout {
                         id: learnLayout
@@ -327,7 +327,7 @@ BigscreenUI.Page {
                         textFormat: Text.RichText
                         wrapMode: Text.Wrap
                         color: Style.text
-                        linkColor: Style.purple
+                        linkColor: Style.accent
                         font.pixelSize: 21
                         lineHeight: 1.3
                     }
@@ -369,7 +369,7 @@ BigscreenUI.Page {
 
                                 Text {
                                     text: modelData.name
-                                    color: Style.purple
+                                    color: Style.accent
                                     font.pixelSize: 21
                                     font.weight: Font.Bold
                                     font.underline: true
@@ -434,7 +434,7 @@ BigscreenUI.Page {
         anchors.topMargin: root.contentMargins.top
         width: Kirigami.Units.gridUnit * 24
         implicitHeight: cardLayout.implicitHeight
-        color: "white"
+        color: Style.card
         border.color: Style.border
         radius: Kirigami.Units.cornerRadius * 2
 

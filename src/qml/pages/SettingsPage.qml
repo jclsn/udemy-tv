@@ -29,6 +29,11 @@ BigscreenUI.ScrollablePage {
         { text: "Türkçe", value: "tr" },
         { text: "日本語", value: "ja" }
     ]
+    readonly property var themeOptions: [
+        { text: i18n("Light, as udemy.com"), value: "light" },
+        { text: i18n("Dark"), value: "dark" },
+        { text: i18n("Same as the TV"), value: "system" }
+    ]
     readonly property var speedOptions: [0.75, 1, 1.25, 1.5, 1.75, 2].map(rate => ({
         text: rate === 1 ? i18n("Normal") : i18n("%1×", rate.toLocaleString(Qt.locale())),
         value: rate
@@ -40,7 +45,7 @@ BigscreenUI.ScrollablePage {
     ]
 
     background: Rectangle {
-        color: "white"
+        color: Style.background
     }
 
     ColumnLayout {
@@ -72,6 +77,25 @@ BigscreenUI.ScrollablePage {
             description: i18n("Removes your login from this TV")
             icon.name: "system-log-out"
             onClicked: signOutDialog.open()
+        }
+
+        BigscreenUI.Label {
+            Layout.topMargin: Kirigami.Units.gridUnit
+            text: i18n("Appearance")
+            type: BigscreenUI.Label.Heading
+            font.weight: Font.Bold
+        }
+
+        BigscreenUI.ComboBoxDelegate {
+            Layout.fillWidth: true
+            text: i18n("Colors")
+            icon.name: "color-management"
+            model: root.themeOptions
+            textRole: "text"
+            valueRole: "value"
+            currentIndex: Math.max(0, root.themeOptions.findIndex(
+                option => option.value === Preferences.theme))
+            onActivated: index => Preferences.theme = root.themeOptions[index].value
         }
 
         BigscreenUI.Label {

@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Jan Claussen <jan.claussen10@web.de>
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Colors of udemy.com, for this app only (see applyColorScheme() in main.cpp)
+# Colors of udemy.com, for this app only (see apptheme.cpp)
 
 [ColorEffects:Disabled]
 Color=56,56,56

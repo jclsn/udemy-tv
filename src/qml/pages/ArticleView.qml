@@ -32,7 +32,7 @@ FocusScope {
 
     Rectangle {
         anchors.fill: parent
-        color: "white"
+        color: Style.background
     }
 
     Flickable {
@@ -85,7 +85,7 @@ FocusScope {
                 textFormat: Text.RichText
                 wrapMode: Text.Wrap
                 color: Style.text
-                linkColor: Style.purple
+                linkColor: Style.accent
                 font.pixelSize: 26
                 lineHeight: 1.3
             }

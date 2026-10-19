@@ -13,7 +13,7 @@ BigscreenUI.Page {
     id: root
 
     background: Rectangle {
-        color: "white"
+        color: Style.background
     }
 
     BigscreenUI.BackHandler.enabled: visible

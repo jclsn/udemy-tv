@@ -34,7 +34,7 @@ Rectangle {
     Text {
         anchors.centerIn: parent
         text: root.initials
-        color: "white"
+        color: Style.background
         font.pixelSize: Math.round(root.height * 0.38)
         font.weight: Font.Bold
     }

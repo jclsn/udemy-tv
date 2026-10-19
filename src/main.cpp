@@ -5,7 +5,6 @@
 #include <QCommandLineParser>
 #include <QDir>
 #include <QDirIterator>
-#include <QFile>
 #include <QFileInfo>
 #include <QIcon>
 #include <QQmlApplicationEngine>
@@ -14,11 +13,10 @@
 #include <QVersionNumber>
 #include <QtWebEngineQuick/QtWebEngineQuick>
 
-#include <KColorScheme>
 #include <KLocalizedQmlContext>
 #include <KLocalizedString>
-#include <KSharedConfig>
 
+#include "apptheme.h"
 #include "udemyclient.h"
 
 namespace
@@ -135,29 +133,6 @@ void migrateFromOldName()
         dir.rename(oldName + QStringLiteral(".conf"), newName + QStringLiteral(".conf"));
     }
 }
-
-// Udemy's colors, for this app only
-void applyColorScheme(QApplication &app)
-{
-    const QString dir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QDir().mkpath(dir);
-    const QString path = dir + QStringLiteral("/UdemyTV.colors");
-    QFile::remove(path);
-
-    if (!QFile::copy(QStringLiteral(":/UdemyTV.colors"), path)) {
-        qWarning() << "Could not install the color scheme to" << path;
-
-        return;
-    }
-
-    QFile::setPermissions(path,
-                          QFile::ReadOwner | QFile::WriteOwner | QFile::ReadGroup
-                              | QFile::ReadOther);
-
-    // KColorScheme, and through it Kirigami, reads this for the app's colors
-    app.setProperty("KDE_COLOR_SCHEME_PATH", path);
-    app.setPalette(KColorScheme::createApplicationPalette(KSharedConfig::openConfig(path)));
-}
 }
 
 int main(int argc, char *argv[])
@@ -202,7 +177,8 @@ int main(int argc, char *argv[])
     parser.process(app);
 
     migrateFromOldName();
-    applyColorScheme(app);
+    // Udemy's colors, light or dark as chosen in the settings
+    AppTheme theme;
 
     UdemyClient client(parser.isSet(demoOption));
     client.setDrmAvailable(drmAvailable);

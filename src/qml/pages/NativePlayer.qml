@@ -707,7 +707,7 @@ FocusScope {
         Rectangle {
             anchors.fill: parent
             radius: Kirigami.Units.cornerRadius * 2
-            color: Style.dark
+            color: Style.band
             border.color: Qt.alpha("white", 0.2)
         }
 

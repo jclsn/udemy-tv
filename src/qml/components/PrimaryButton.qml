@@ -74,7 +74,7 @@ T.Button {
             radius: Kirigami.Units.cornerRadius * 2 + 5
             color: "transparent"
             border.width: 3
-            border.color: root.onDark ? Style.purpleLight : Style.purple
+            border.color: root.onDark ? Style.purpleLight : Style.accent
             visible: root.activeFocus
         }
     }

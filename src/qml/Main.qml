@@ -87,6 +87,14 @@ BigscreenUI.ApplicationWindow {
         id: bridge
     }
 
+    // Light or dark, as chosen in the settings
+    Binding {
+        target: AppTheme
+        property: "dark"
+        value: Preferences.theme === "dark"
+            || (Preferences.theme === "system" && Qt.styleHints.colorScheme === Qt.ColorScheme.Dark)
+    }
+
     // Before signing in: the splash while connecting, then the login pages, over everything else
     BigscreenUI.StackView {
         id: gate

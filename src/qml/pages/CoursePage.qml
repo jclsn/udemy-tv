@@ -95,7 +95,7 @@ BigscreenUI.Page {
     }
 
     background: Rectangle {
-        color: "white"
+        color: Style.background
     }
 
     RowLayout {
@@ -106,7 +106,7 @@ BigscreenUI.Page {
         Rectangle {
             Layout.fillHeight: true
             Layout.preferredWidth: Math.round(root.width * 0.38)
-            color: Style.dark
+            color: Style.band
 
             ColumnLayout {
                 anchors.fill: parent

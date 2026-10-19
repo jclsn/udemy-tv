@@ -90,7 +90,7 @@ T.ItemDelegate {
             sourceSize.height: height * Screen.devicePixelRatio
 
             border.width: root.activeFocus ? BigscreenUI.Units.focusBorderWidth : 1
-            border.color: root.activeFocus ? Style.purple : Style.border
+            border.color: root.activeFocus ? Style.accent : Style.border
 
             shadow.size: root.activeFocus ? Kirigami.Units.gridUnit * 1.5 : 0
             shadow.yOffset: root.activeFocus ? Kirigami.Units.smallSpacing * 2 : 0

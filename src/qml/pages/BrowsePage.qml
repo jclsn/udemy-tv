@@ -26,7 +26,7 @@ BigscreenUI.Page {
     }
 
     background: Rectangle {
-        color: "white"
+        color: Style.background
     }
 
     CourseListModel {
@@ -99,7 +99,7 @@ BigscreenUI.Page {
                 y: -grid.topMargin
                 width: grid.width
                 height: band.height + grid.topMargin
-                color: Style.dark
+                color: Style.band
             }
 
             ColumnLayout {

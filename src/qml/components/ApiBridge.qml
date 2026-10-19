@@ -137,7 +137,7 @@ Item {
         visible: root.needsAttention
         width: parent.width
         height: noticeLayout.implicitHeight + Kirigami.Units.gridUnit * 2
-        color: Style.dark
+        color: Style.band
 
         RowLayout {
             id: noticeLayout

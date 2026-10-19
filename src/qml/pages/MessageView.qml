@@ -24,7 +24,7 @@ FocusScope {
 
     Rectangle {
         anchors.fill: parent
-        color: Style.dark
+        color: Style.band
     }
 
     ColumnLayout {

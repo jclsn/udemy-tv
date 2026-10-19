@@ -3,6 +3,8 @@
 
 qt_add_executable(udemy-tv
     main.cpp
+    apptheme.cpp
+    apptheme.h
     captionparser.cpp
     captionparser.h
     captiontrack.cpp
@@ -81,6 +83,7 @@ qt_add_resources(udemy-tv appdata
         protectedplayer.js
         webplayer.js
         UdemyTV.colors
+        UdemyTV-Dark.colors
 )
 
 # Plays copy-protected lectures with the browser engine's Widevine module
