@@ -21,6 +21,12 @@ BigscreenUI.Page {
         i18n("Kubernetes")
     ]
 
+    onVisibleChanged: {
+        if (visible && results.query.length === 0) {
+            results.query = suggestions[0];
+        }
+    }
+
     function search(text: string): void {
         results.query = text;
     }
@@ -32,7 +38,8 @@ BigscreenUI.Page {
     CourseListModel {
         id: results
         source: CourseListModel.Search
-        query: root.suggestions[0]
+        // Searched once the page is first shown, not while the app starts
+        query: ""
     }
 
     BigscreenUI.MediaGrid {
