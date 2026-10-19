@@ -47,6 +47,8 @@ Needs Qt 6.11 (Base, Declarative, Multimedia, WebEngine, WebChannel), KDE Framew
   large with the other as picture-in-picture. Switch with ▲ while the controls are hidden, S,
   or the "Switch view" button.
 - **Buying:** Browse, open a course, "Buy now" opens Udemy's checkout page.
+- **Colors:** light as on udemy.com, or dark. The moon or sun beside the settings button
+  switches them; Settings can also follow the TV.
 
 `UDEMY_TV_DUMP_LECTURES=1` saves the raw lecture data to
 `~/.cache/udemy-tv/udemy-tv/lectures/`. The format of mashup slides is undocumented and the parser

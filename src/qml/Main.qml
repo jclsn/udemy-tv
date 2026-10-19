@@ -58,8 +58,18 @@ BigscreenUI.ApplicationWindow {
             icon.name: "settings-configure"
             displayHint: Kirigami.DisplayHint.IconOnly
             onTriggered: root.showPage(settingsPage)
+        },
+        // Not a page, but a switch: the moon turns the colors dark, the sun light again
+        Kirigami.Action {
+            text: AppTheme.dark ? i18n("Use light colors") : i18n("Use dark colors")
+            icon.name: AppTheme.dark ? "weather-clear-symbolic" : "weather-clear-night-symbolic"
+            displayHint: Kirigami.DisplayHint.IconOnly
+            onTriggered: Preferences.theme = AppTheme.dark ? "light" : "dark"
         }
     ]
+
+    // Where the color switch sits in the navigation bar
+    readonly property int colorSwitchIndex: pageActions.length - 1
 
     readonly property list<Item> pages: [
         HomePage {
@@ -76,7 +86,51 @@ BigscreenUI.ApplicationWindow {
     initialPage: homePage
 
     navigationBar: BigscreenUI.NavigationBar {
+        id: navigation
+
+        // The tab of the page shown, which the color switch must not take over
+        property int pageIndex: 0
+
         actions: root.pageActions
+
+        onActivated: index => {
+            if (index === root.colorSwitchIndex) {
+                Qt.callLater(keepPageSelected);
+
+                return;
+            }
+
+            pageIndex = index;
+        }
+
+        // Selecting the page's tab again moves the focus there too; the bar keeps its list of
+        // tabs to itself, so find it to give the focus back to the switch
+        function keepPageSelected(): void {
+            currentIndex = pageIndex;
+            const tabs = findTabs(navigation);
+
+            if (tabs) {
+                tabs.currentIndex = root.colorSwitchIndex;
+                tabs.currentItem?.forceActiveFocus();
+            }
+        }
+
+        function findTabs(item: Item): ListView {
+            for (const child of item.children) {
+                if (child instanceof ListView && child.count === navigation.actions.length) {
+                    return child;
+                }
+
+                const found = findTabs(child);
+
+                if (found) {
+                    return found;
+                }
+            }
+
+            return null;
+        }
+
         leading: Wordmark {}
         trailing: Avatar {
             user: UdemyClient.user
