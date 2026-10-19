@@ -81,6 +81,20 @@ BigscreenUI.Page {
         labelHeight: cardMetrics.labelsHeight
         rowSpacing: Kirigami.Units.gridUnit * 1.5
 
+        // A course that keeps the focus for a moment is likely to be opened next
+        onCurrentIndexChanged: prefetchTimer.restart()
+
+        Timer {
+            id: prefetchTimer
+            interval: 700
+            onTriggered: {
+                // The wishlist holds courses not bought yet, without a curriculum to load
+                if (root.tab !== HomePage.Wishlist && grid.currentIndex >= 0) {
+                    courses.prefetchCourse(courses.get(grid.currentIndex).id ?? 0);
+                }
+            }
+        }
+
         // The grid can get focus before the courses arrive; then nothing would look focused
         onCountChanged: {
             if (currentIndex < 0 && count > 0) {
