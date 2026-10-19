@@ -6,6 +6,7 @@
 #include "curriculummodel.h"
 
 #include <QElapsedTimer>
+#include <QJsonObject>
 #include <QObject>
 #include <QQmlEngine>
 #include <QVariantMap>
@@ -76,6 +77,12 @@ public:
      */
     Q_INVOKABLE QUrl webUrl(int row) const;
 
+    /*!
+       \brief Loads a course's curriculum and progress into the cache, for its page to open at
+       once later.
+     */
+    static void prefetch(qint64 courseId);
+
 Q_SIGNALS:
     void courseChanged();
     void loadingChanged();
@@ -84,7 +91,7 @@ Q_SIGNALS:
     void resumeRowChanged();
 
 private:
-    void loadProgress();
+    void applyProgress(const QJsonObject &progress);
     void updateResumeRow();
     void setError(const QString &error);
 
@@ -94,5 +101,6 @@ private:
     QString m_error;
     int m_resumeRow = -1;
     qint64 m_lastSeenLecture = 0;
+    QJsonObject m_progress;
     QElapsedTimer m_lastReport;
 };

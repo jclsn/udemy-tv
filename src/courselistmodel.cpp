@@ -3,6 +3,8 @@
 
 #include "courselistmodel.h"
 
+#include "apicache.h"
+#include "coursesession.h"
 #include "udemyclient.h"
 
 #include <QCollator>
@@ -329,6 +331,75 @@ QVariantMap CourseListModel::normalizeCourse(const QJsonObject &course)
     };
 }
 
+QString CourseListModel::cacheKey() const
+{
+    switch (m_source) {
+    case Enrolled:
+        return QStringLiteral("courses/enrolled");
+    case Archived:
+        return QStringLiteral("courses/archived");
+    case Wishlist:
+        return QStringLiteral("courses/wishlist");
+    case Collections:
+        return QStringLiteral("courses/collections");
+    case Search:
+        break;
+    }
+
+    // Search results depend on the words, and are not worth keeping
+    return {};
+}
+
+QList<QVariantMap> CourseListModel::toCourses(const QJsonArray &results)
+{
+    QList<QVariantMap> courses;
+
+    for (const QJsonValue &value : results) {
+        const QJsonObject object = value.toObject();
+
+        // Some lists wrap the course, as {"course": {...}}
+        courses.append(normalizeCourse(
+            object.contains(u"course") ? object.value(u"course").toObject() : object));
+    }
+
+    return courses;
+}
+
+void CourseListModel::showResults(const QJsonArray &results)
+{
+    if (m_source != Collections) {
+        const QList<QVariantMap> courses = toCourses(results);
+
+        if (m_source == Enrolled) {
+            for (const QVariantMap &course : courses) {
+                enrolledIds().insert(course.value(QStringLiteral("id")).toLongLong());
+            }
+        }
+
+        setAll(courses);
+
+        return;
+    }
+
+    m_collectionTitles.clear();
+    m_collectionCourses.clear();
+
+    for (const QJsonValue &value : results) {
+        const QJsonObject collection = value.toObject();
+        m_collectionTitles.append(collection.value(u"title").toString());
+        m_collectionCourses.append(toCourses(collection.value(u"courses").toArray()));
+    }
+
+    Q_EMIT collectionsChanged();
+
+    if (m_collectionIndex >= m_collectionTitles.size()) {
+        m_collectionIndex = 0;
+        Q_EMIT collectionIndexChanged();
+    }
+
+    setAll(m_collectionCourses.value(m_collectionIndex));
+}
+
 void CourseListModel::reload()
 {
     m_reloadTimer.stop();
@@ -344,107 +415,63 @@ void CourseListModel::reload()
         return;
     }
 
-    auto toCourses = [](const QJsonArray &results) {
-        QList<QVariantMap> courses;
+    if (m_source == Search) {
+        search(generation);
 
-        for (const QJsonValue &value : results) {
-            const QJsonObject object = value.toObject();
-            // Some lists wrap the course, as {"course": {...}}
-            courses.append(normalizeCourse(
-                object.contains(u"course") ? object.value(u"course").toObject() : object));
+        return;
+    }
+
+    // Show what Udemy answered last time at once, then what it answers now
+    const QString key = cacheKey();
+    const QJsonArray cached = ApiCache::instance().read(key).array();
+
+    if (!cached.isEmpty()) {
+        showResults(cached);
+    } else {
+        setAll({});
+    }
+
+    setLoading(true);
+
+    auto finish = [=, this](const QJsonArray &results, const QString &error) {
+        if (generation != m_generation) {
+            return;
         }
 
-        return courses;
+        setLoading(false);
+
+        // An outdated list is better than none
+        if (!error.isEmpty() && results.isEmpty()) {
+            setError(m_all.isEmpty() ? error : QString());
+
+            return;
+        }
+
+        if (results != cached) {
+            ApiCache::instance().write(key, QJsonDocument(results));
+            showResults(results);
+        }
     };
 
     switch (m_source) {
-    case Enrolled: {
-        setLoading(true);
-        QUrlQuery query = courseQuery();
-        query.addQueryItem(QStringLiteral("ordering"),
-                           QStringLiteral("-last_accessed,-access_time"));
-        client->getAllPages(
-            client->apiUrl(QStringLiteral("users/me/subscribed-courses/"), query),
-            this,
-            [=, this](const QJsonArray &results, const QString &error) {
-                if (generation != m_generation) {
-                    return;
-                }
-
-                QList<QVariantMap> courses = toCourses(results);
-
-                // Courses from a Personal Plan subscription are listed separately
-                QUrlQuery subscriptionQuery = courseQuery();
-                subscriptionQuery.addQueryItem(QStringLiteral("ordering"),
-                                               QStringLiteral("-last_accessed,-enrolled"));
-                client->getAllPages(
-                    client->apiUrl(QStringLiteral("users/me/subscription-course-enrollments/"),
-                                   subscriptionQuery),
-                    this,
-                    [=, this](const QJsonArray &moreResults, const QString &) mutable {
-                        if (generation != m_generation) {
-                            return;
-                        }
-
-                        QSet<qint64> seen;
-
-                        for (const QVariantMap &course : std::as_const(courses)) {
-                            seen.insert(course.value(QStringLiteral("id")).toLongLong());
-                        }
-
-                        for (const QVariantMap &course : toCourses(moreResults)) {
-                            if (!seen.contains(course.value(QStringLiteral("id")).toLongLong())) {
-                                courses.append(course);
-                            }
-                        }
-
-                        for (const QVariantMap &course : std::as_const(courses)) {
-                            enrolledIds().insert(course.value(QStringLiteral("id")).toLongLong());
-                        }
-
-                        setError(courses.isEmpty() ? error : QString());
-                        setAll(courses);
-                        setLoading(false);
-                    },
-                    5);
-            });
+    case Enrolled:
+        loadEnrolled(finish);
         break;
-    }
     case Archived: {
-        setLoading(true);
         QUrlQuery query = courseQuery();
         query.addQueryItem(QStringLiteral("is_archived"), QStringLiteral("true"));
         client->getAllPages(client->apiUrl(QStringLiteral("users/me/subscribed-courses/"), query),
                             this,
-                            [=, this](const QJsonArray &results, const QString &error) {
-                                if (generation != m_generation) {
-                                    return;
-                                }
-
-                                setError(error);
-                                setAll(toCourses(results));
-                                setLoading(false);
-                            });
+                            finish);
         break;
     }
-    case Wishlist: {
-        setLoading(true);
+    case Wishlist:
         client->getAllPages(
             client->apiUrl(QStringLiteral("users/me/wishlisted-courses/"), courseQuery()),
             this,
-            [=, this](const QJsonArray &results, const QString &error) {
-                if (generation != m_generation) {
-                    return;
-                }
-
-                setError(error);
-                setAll(toCourses(results));
-                setLoading(false);
-            });
+            finish);
         break;
-    }
     case Collections: {
-        setLoading(true);
         QUrlQuery query;
         query.addQueryItem(QStringLiteral("collection_has_courses"), QStringLiteral("True"));
         query.addQueryItem(QStringLiteral("course_limit"), QStringLiteral("100"));
@@ -456,88 +483,137 @@ void CourseListModel::reload()
         client->getAllPages(
             client->apiUrl(QStringLiteral("users/me/subscribed-courses-collections/"), query),
             this,
-            [=, this](const QJsonArray &results, const QString &error) {
-                if (generation != m_generation) {
-                    return;
-                }
-
-                m_collectionTitles.clear();
-                m_collectionCourses.clear();
-
-                for (const QJsonValue &value : results) {
-                    const QJsonObject collection = value.toObject();
-                    m_collectionTitles.append(collection.value(u"title").toString());
-                    m_collectionCourses.append(toCourses(collection.value(u"courses").toArray()));
-                }
-
-                Q_EMIT collectionsChanged();
-
-                if (m_collectionIndex >= m_collectionTitles.size()) {
-                    m_collectionIndex = 0;
-                    Q_EMIT collectionIndexChanged();
-                }
-
-                setError(error);
-                setAll(m_collectionCourses.value(m_collectionIndex));
-                setLoading(false);
-            });
+            finish);
         break;
     }
-    case Search: {
-        if (m_query.trimmed().isEmpty()) {
-            setAll({});
-            setLoading(false);
+    case Search:
+        break;
+    }
+}
 
+void CourseListModel::loadEnrolled(const UdemyClient::PageCallback &finish)
+{
+    // Bought courses, and those of a Personal Plan subscription, asked for at the same time
+    struct Parts {
+        QJsonArray bought;
+        QJsonArray subscribed;
+        QString error;
+        int missing = 2;
+    };
+    auto parts = std::make_shared<Parts>();
+
+    auto join = [parts, finish] {
+        if (--parts->missing > 0) {
             return;
         }
 
-        setLoading(true);
-        const QJsonObject body{
-            {QStringLiteral("query"), SearchQuery},
-            {QStringLiteral("variables"),
-             QJsonObject{
-                 {QStringLiteral("query"), m_query.trimmed()},
-                 {QStringLiteral("page"), 0},
-                 {QStringLiteral("pageSize"), 48},
-                 {QStringLiteral("context"),
-                  QJsonObject{{QStringLiteral("triggerType"), QStringLiteral("USER_QUERY")}}},
-             }},
-        };
-        QUrl url = client->baseUrl();
-        url.setPath(QStringLiteral("/api/2024-01/graphql/"));
-        // The GraphQL search fails (HTTP 500) for signed-in users; results are the same for all
-        client->post(
-            url,
-            QJsonDocument(body),
-            this,
-            [=, this](const UdemyClient::Reply &reply) {
-                if (generation != m_generation) {
-                    return;
-                }
+        QJsonArray results = parts->bought;
+        QSet<qint64> seen;
 
-                const QJsonArray results = reply.json.object()
-                                               .value(u"data")
-                                               .toObject()
-                                               .value(u"courseSearch")
-                                               .toObject()
-                                               .value(u"results")
-                                               .toArray();
-                QList<QVariantMap> courses;
+        for (const QJsonValue &value : std::as_const(results)) {
+            seen.insert(value.toObject().value(u"id").toInteger());
+        }
 
-                for (const QJsonValue &result : results) {
-                    courses.append(
-                        normalizeSearchResult(result.toObject().value(u"course").toObject()));
-                }
+        for (const QJsonValue &value : std::as_const(parts->subscribed)) {
+            const QJsonObject object = value.toObject();
+            const QJsonObject course =
+                object.contains(u"course") ? object.value(u"course").toObject() : object;
 
-                setError(reply.ok() || !courses.isEmpty() ? QString() : reply.error);
-                setAll(courses);
-                setLoading(false);
-                loadPrices(generation);
-            },
-            UdemyClient::Session::Omitted);
-        break;
+            if (!seen.contains(course.value(u"id").toInteger())) {
+                results.append(value);
+            }
+        }
+
+        finish(results, parts->error);
+    };
+
+    auto client = UdemyClient::instance();
+    QUrlQuery query = courseQuery();
+    query.addQueryItem(QStringLiteral("ordering"), QStringLiteral("-last_accessed,-access_time"));
+    client->getAllPages(client->apiUrl(QStringLiteral("users/me/subscribed-courses/"), query),
+                        this,
+                        [parts, join](const QJsonArray &results, const QString &error) {
+                            parts->bought = results;
+                            parts->error = error;
+                            join();
+                        });
+
+    QUrlQuery subscriptionQuery = courseQuery();
+    subscriptionQuery.addQueryItem(QStringLiteral("ordering"),
+                                   QStringLiteral("-last_accessed,-enrolled"));
+    client->getAllPages(
+        client->apiUrl(QStringLiteral("users/me/subscription-course-enrollments/"),
+                       subscriptionQuery),
+        this,
+        [parts, join](const QJsonArray &results, const QString &) {
+            // Most accounts have no subscription, and get an error here
+            parts->subscribed = results;
+            join();
+        },
+        5);
+}
+
+void CourseListModel::search(int generation)
+{
+    auto client = UdemyClient::instance();
+
+    if (m_query.trimmed().isEmpty()) {
+        setAll({});
+        setLoading(false);
+
+        return;
     }
-    }
+
+    setLoading(true);
+    const QJsonObject body{
+        {QStringLiteral("query"), SearchQuery},
+        {QStringLiteral("variables"),
+         QJsonObject{
+             {QStringLiteral("query"), m_query.trimmed()},
+             {QStringLiteral("page"), 0},
+             {QStringLiteral("pageSize"), 48},
+             {QStringLiteral("context"),
+              QJsonObject{{QStringLiteral("triggerType"), QStringLiteral("USER_QUERY")}}},
+         }},
+    };
+    QUrl url = client->baseUrl();
+    url.setPath(QStringLiteral("/api/2024-01/graphql/"));
+
+    // The GraphQL search fails (HTTP 500) for signed-in users; results are the same for all
+    client->post(
+        url,
+        QJsonDocument(body),
+        this,
+        [=, this](const UdemyClient::Reply &reply) {
+            if (generation != m_generation) {
+                return;
+            }
+
+            const QJsonArray results = reply.json.object()
+                                           .value(u"data")
+                                           .toObject()
+                                           .value(u"courseSearch")
+                                           .toObject()
+                                           .value(u"results")
+                                           .toArray();
+            QList<QVariantMap> courses;
+
+            for (const QJsonValue &result : results) {
+                courses.append(
+                    normalizeSearchResult(result.toObject().value(u"course").toObject()));
+            }
+
+            setError(reply.ok() || !courses.isEmpty() ? QString() : reply.error);
+            setAll(courses);
+            setLoading(false);
+            loadPrices(generation);
+        },
+        UdemyClient::Session::Omitted);
+}
+
+void CourseListModel::prefetchCourse(qint64 courseId)
+{
+    CourseSession::prefetch(courseId);
 }
 
 QVariantMap CourseListModel::normalizeSearchResult(const QJsonObject &course)
@@ -690,6 +766,20 @@ void CourseListModel::applyFilter()
 
                              return ascending ? result < 0 : result > 0;
                          });
+    }
+
+    // The same courses as before, such as after a refresh: update them where they are, so the
+    // view keeps its focus and position
+    const auto sameCourse = [](const QVariantMap &a, const QVariantMap &b) {
+        return a.value(QStringLiteral("id")) == b.value(QStringLiteral("id"));
+    };
+
+    if (courses.size() == m_courses.size() && !courses.isEmpty()
+        && std::equal(courses.cbegin(), courses.cend(), m_courses.cbegin(), sameCourse)) {
+        m_courses = courses;
+        Q_EMIT dataChanged(index(0), index(int(m_courses.size()) - 1));
+
+        return;
     }
 
     beginResetModel();

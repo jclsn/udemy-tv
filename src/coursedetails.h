@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <QJsonObject>
 #include <QObject>
 #include <QQmlEngine>
 #include <QStringList>
@@ -73,9 +74,12 @@ Q_SIGNALS:
 private:
     void load();
     void setPending(int pending);
+    void applyDetails(const QJsonObject &course);
+    void applyOutline(const QJsonObject &data);
 
     qint64 m_courseId = 0;
     int m_pending = 0; // Requests still running
+    bool m_cached = false; // Shows what the page said last time
     int m_generation = 0;
     QString m_error;
     QString m_description;

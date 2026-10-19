@@ -185,6 +185,7 @@ private:
         bool anonymous = false;
         bool sent = false;
         qint64 deadline = 0;
+        qint64 created = 0; // For timing requests in the debug output
     };
 
     void request(const QString &method,
@@ -199,6 +200,7 @@ private:
     void setAuthState(AuthState state);
     void setLastError(const QString &error);
     void rejectLogin();
+    void startWithCachedAccount();
     void onCookieAdded(const QNetworkCookie &cookie);
     void onCookieRemoved(const QNetworkCookie &cookie);
     void finishLoadingCookies();
@@ -213,6 +215,9 @@ private:
     bool m_bridgeReady = false;
     bool m_drmAvailable = false;
     bool m_tokenPending = false; // A token was given and is not checked yet
+
+    // Started with the account of the last start, before Udemy confirmed it
+    bool m_accountUnverified = false;
     QString m_portal;
     QString m_accessToken;
     QString m_csrfToken;

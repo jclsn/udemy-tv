@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "udemyclient.h"
+
 #include <QAbstractListModel>
 #include <QJsonArray>
 #include <QQmlEngine>
@@ -96,6 +98,12 @@ public:
     int totalCount() const;
 
     Q_INVOKABLE void reload();
+
+    /*!
+       \brief Loads a course's curriculum ahead, such as while its card has the focus, so its
+       page opens at once.
+     */
+    Q_INVOKABLE void prefetchCourse(qint64 courseId);
     Q_INVOKABLE QVariantMap get(int row) const;
 
     /*!
@@ -128,6 +136,11 @@ private:
     void setLoading(bool loading);
     void setError(const QString &error);
     void setAll(const QList<QVariantMap> &courses);
+    QString cacheKey() const;
+    void showResults(const QJsonArray &results);
+    void loadEnrolled(const UdemyClient::PageCallback &finish);
+    void search(int generation);
+    static QList<QVariantMap> toCourses(const QJsonArray &results);
     void applyFilter();
     void loadPrices(int generation);
 

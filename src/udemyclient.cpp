@@ -3,6 +3,7 @@
 
 #include "udemyclient.h"
 
+#include "apicache.h"
 #include "demobackend.h"
 
 #include <QDateTime>
@@ -75,6 +76,8 @@ UdemyClient::UdemyClient(bool demoMode, QObject *parent)
     s_instance = this;
 
     m_portal = QSettings().value(QStringLiteral("portal"), QStringLiteral("www")).toString();
+    ApiCache::instance().setEnabled(!m_demoMode);
+    ApiCache::instance().setScope(m_portal);
 
     if (m_demoMode) {
         // Nothing is stored for the demo
@@ -114,6 +117,8 @@ UdemyClient::UdemyClient(bool demoMode, QObject *parent)
 
     if (m_demoMode) {
         checkAccount();
+    } else {
+        startWithCachedAccount();
     }
 }
 
@@ -181,6 +186,7 @@ void UdemyClient::setPortal(const QString &portal)
 
     m_portal = cleaned;
     QSettings().setValue(QStringLiteral("portal"), m_portal);
+    ApiCache::instance().setScope(m_portal);
     Q_EMIT portalChanged();
 
     m_user.clear();
@@ -366,6 +372,7 @@ void UdemyClient::request(const QString &method,
     pending.url = url;
     pending.body = body;
     pending.anonymous = session == Session::Omitted;
+    pending.created = QDateTime::currentMSecsSinceEpoch();
     m_pending.insert(id, pending);
 
     qCDebug(UDEMY_API) << method << url.toString(QUrl::FullyEncoded);
@@ -478,6 +485,8 @@ void UdemyClient::deliver(int id, int status, const QString &body)
 void UdemyClient::finish(int id, const Reply &reply)
 {
     const Pending pending = m_pending.take(id);
+    qCDebug(UDEMY_API) << pending.method << pending.url.path() << "took"
+                       << QDateTime::currentMSecsSinceEpoch() - pending.created << "ms";
 
     if (pending.hasContext && !pending.context) {
         return;
@@ -506,6 +515,21 @@ void UdemyClient::checkTimeouts()
     }
 }
 
+void UdemyClient::startWithCachedAccount()
+{
+    // The account of the last start: show its courses at once, and check it once Udemy answers
+    const QJsonObject user = ApiCache::instance().read(QStringLiteral("user")).object();
+
+    if (user.value(u"id").toInteger() <= 0) {
+        return;
+    }
+
+    m_user = user.toVariantMap();
+    m_accountUnverified = true;
+    m_authState = LoggedIn;
+    qCInfo(UDEMY_API) << "Starting with the cached account";
+}
+
 void UdemyClient::bridgeAttached()
 {
     if (m_demoMode) {
@@ -523,7 +547,7 @@ void UdemyClient::bridgeAttached()
         send(id);
     }
 
-    if (m_authState == Connecting) {
+    if (m_authState == Connecting || m_accountUnverified) {
         checkAccount();
     }
 }
@@ -551,6 +575,15 @@ void UdemyClient::checkAccount()
 
             if (known) {
                 m_tokenPending = false;
+                m_accountUnverified = false;
+
+                // Another account's courses must not show up
+                if (object.value(u"id").toInteger()
+                    != m_user.value(QStringLiteral("id")).toLongLong()) {
+                    ApiCache::instance().clear();
+                }
+
+                ApiCache::instance().write(QStringLiteral("user"), QJsonDocument(object));
                 m_user = object.toVariantMap();
                 Q_EMIT userChanged();
                 setLastError({});
@@ -576,6 +609,9 @@ void UdemyClient::checkAccount()
 
 void UdemyClient::rejectLogin()
 {
+    m_accountUnverified = false;
+    ApiCache::instance().clear();
+
     if (m_tokenPending) {
         m_tokenPending = false;
         setLastError(QStringLiteral(
@@ -616,6 +652,7 @@ void UdemyClient::logout()
 
     m_profile->cookieStore()->deleteAllCookies();
     m_tokenCookies.clear();
+    ApiCache::instance().clear();
     m_profile->clearHttpCache();
     m_accessToken.clear();
     m_csrfToken.clear();

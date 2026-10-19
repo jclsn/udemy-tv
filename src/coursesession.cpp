@@ -3,6 +3,7 @@
 
 #include "coursesession.h"
 
+#include "apicache.h"
 #include "udemyclient.h"
 
 #include <QDateTime>
@@ -13,6 +14,53 @@
 
 namespace
 {
+// How old a prefetched curriculum may be before it is loaded again, in seconds
+constexpr qint64 PrefetchMaxAgeSeconds = 10 * 60;
+
+QString curriculumKey(qint64 courseId)
+{
+    return QStringLiteral("course/%1/curriculum").arg(courseId);
+}
+
+QString progressKey(qint64 courseId)
+{
+    return QStringLiteral("course/%1/progress").arg(courseId);
+}
+
+QUrl curriculumUrl(qint64 courseId)
+{
+    QUrlQuery query;
+    query.addQueryItem(QStringLiteral("page_size"), QStringLiteral("200"));
+    query.addQueryItem(QStringLiteral("fields[lecture]"),
+                       QStringLiteral("title,object_index,is_published,sort_order,asset"));
+    query.addQueryItem(QStringLiteral("fields[quiz]"),
+                       QStringLiteral("title,object_index,is_published,sort_order,type"));
+    query.addQueryItem(QStringLiteral("fields[practice]"),
+                       QStringLiteral("title,object_index,is_published,sort_order"));
+    query.addQueryItem(QStringLiteral("fields[chapter]"),
+                       QStringLiteral("title,object_index,is_published,sort_order"));
+    query.addQueryItem(QStringLiteral("fields[asset]"),
+                       QStringLiteral("title,asset_type,time_estimation,length,status"));
+    query.addQueryItem(QStringLiteral("caching_intent"), QStringLiteral("True"));
+
+    return UdemyClient::instance()->apiUrl(
+        QStringLiteral("courses/%1/subscriber-curriculum-items/").arg(courseId),
+        query);
+}
+
+QUrl progressUrl(qint64 courseId)
+{
+    QUrlQuery query;
+    query.addQueryItem(
+        QStringLiteral("fields[course]"),
+        QStringLiteral(
+            "completed_lecture_ids,completed_quiz_ids,last_seen_page,completed_assignment_ids"));
+
+    return UdemyClient::instance()->apiUrl(
+        QStringLiteral("users/me/subscribed-courses/%1/progress/").arg(courseId),
+        query);
+}
+
 // How often the position is sent to Udemy while watching
 constexpr qint64 ReportIntervalMs = 30000;
 
@@ -107,78 +155,113 @@ void CourseSession::load()
         return;
     }
 
-    m_loading = true;
-    Q_EMIT loadingChanged();
     setError({});
 
+    // What Udemy answered last time, shown at once; the answers of now follow
+    const QJsonArray cachedCurriculum =
+        ApiCache::instance().read(curriculumKey(courseId())).array();
+    const QJsonObject cachedProgress = ApiCache::instance().read(progressKey(courseId())).object();
+
+    if (!cachedCurriculum.isEmpty()) {
+        m_curriculum->setItems(cachedCurriculum);
+        applyProgress(cachedProgress);
+    }
+
+    m_loading = cachedCurriculum.isEmpty();
+    Q_EMIT loadingChanged();
+
     auto client = UdemyClient::instance();
-    QUrlQuery query;
-    query.addQueryItem(QStringLiteral("page_size"), QStringLiteral("200"));
-    query.addQueryItem(QStringLiteral("fields[lecture]"),
-                       QStringLiteral("title,object_index,is_published,sort_order,asset"));
-    query.addQueryItem(QStringLiteral("fields[quiz]"),
-                       QStringLiteral("title,object_index,is_published,sort_order,type"));
-    query.addQueryItem(QStringLiteral("fields[practice]"),
-                       QStringLiteral("title,object_index,is_published,sort_order"));
-    query.addQueryItem(QStringLiteral("fields[chapter]"),
-                       QStringLiteral("title,object_index,is_published,sort_order"));
-    query.addQueryItem(QStringLiteral("fields[asset]"),
-                       QStringLiteral("title,asset_type,time_estimation,length,status"));
-    query.addQueryItem(QStringLiteral("caching_intent"), QStringLiteral("True"));
+    auto missing = std::make_shared<int>(2);
 
-    const QUrl url =
-        client->apiUrl(QStringLiteral("courses/%1/subscriber-curriculum-items/").arg(courseId()),
-                       query);
-    client->getAllPages(url, this, [this](const QJsonArray &results, const QString &error) {
-        m_curriculum->setItems(results);
+    auto done = [this, missing] {
+        if (--*missing == 0 && m_loading) {
+            m_loading = false;
+            Q_EMIT loadingChanged();
+        }
+    };
 
-        if (!error.isEmpty() && results.isEmpty()) {
-            setError(error);
+    client->getAllPages(
+        curriculumUrl(courseId()),
+        this,
+        [this, done, cachedCurriculum](const QJsonArray &results, const QString &error) {
+            if (!error.isEmpty() && results.isEmpty()) {
+                setError(cachedCurriculum.isEmpty() ? error : QString());
+            } else if (results != cachedCurriculum) {
+                ApiCache::instance().write(curriculumKey(courseId()), QJsonDocument(results));
+                m_curriculum->setItems(results);
+                applyProgress(m_progress);
+            }
+
+            done();
+        });
+
+    client->get(progressUrl(courseId()), this, [this, done](const UdemyClient::Reply &reply) {
+        if (reply.ok()) {
+            const QJsonObject progress = reply.json.object();
+            ApiCache::instance().write(progressKey(courseId()), QJsonDocument(progress));
+            applyProgress(progress);
         }
 
-        loadProgress();
+        done();
     });
 }
 
-void CourseSession::loadProgress()
+void CourseSession::prefetch(qint64 courseId)
 {
+    // Courses change rarely; a curriculum from the last minutes is good enough
+    qint64 age = 0;
+    const bool cached = !ApiCache::instance().read(curriculumKey(courseId), &age).isNull();
+
+    if (courseId <= 0 || (cached && age < PrefetchMaxAgeSeconds)) {
+        return;
+    }
+
     auto client = UdemyClient::instance();
-    QUrlQuery query;
-    query.addQueryItem(
-        QStringLiteral("fields[course]"),
-        QStringLiteral(
-            "completed_lecture_ids,completed_quiz_ids,last_seen_page,completed_assignment_ids"));
-    const QUrl url =
-        client->apiUrl(QStringLiteral("users/me/subscribed-courses/%1/progress/").arg(courseId()),
-                       query);
-    client->get(url, this, [this](const UdemyClient::Reply &reply) {
-        const QJsonObject object = reply.json.object();
-        QSet<qint64> lectures;
-        QSet<qint64> quizzes;
-
-        for (const QJsonValue &value : object.value(u"completed_lecture_ids").toArray()) {
-            lectures.insert(value.toInteger());
+    client->getAllPages(curriculumUrl(courseId),
+                        client,
+                        [courseId](const QJsonArray &results, const QString &error) {
+                            if (error.isEmpty() || !results.isEmpty()) {
+                                ApiCache::instance().write(curriculumKey(courseId),
+                                                           QJsonDocument(results));
+                            }
+                        });
+    client->get(progressUrl(courseId), client, [courseId](const UdemyClient::Reply &reply) {
+        if (reply.ok()) {
+            ApiCache::instance().write(progressKey(courseId), reply.json);
         }
-
-        for (const QJsonValue &value : object.value(u"completed_quiz_ids").toArray()) {
-            quizzes.insert(value.toInteger());
-        }
-
-        m_curriculum->setCompletedIds(lectures, quizzes);
-
-        // Usually the path of the lecture, such as "/course/x/learn/lecture/123"
-        static const QRegularExpression lecturePattern(QStringLiteral("lecture/(\\d+)"));
-        const QJsonValue lastSeen = object.value(u"last_seen_page");
-        const auto match = lecturePattern.match(
-            lastSeen.isString() ? lastSeen.toString()
-                                : QString::number(lastSeen.toObject().value(u"id").toInteger()));
-        m_lastSeenLecture = match.hasMatch() ? match.captured(1).toLongLong() : 0;
-
-        updateResumeRow();
-        Q_EMIT progressChanged();
-        m_loading = false;
-        Q_EMIT loadingChanged();
     });
+}
+
+void CourseSession::applyProgress(const QJsonObject &progress)
+{
+    if (progress.isEmpty()) {
+        return;
+    }
+
+    m_progress = progress;
+    QSet<qint64> lectures;
+    QSet<qint64> quizzes;
+
+    for (const QJsonValue &value : progress.value(u"completed_lecture_ids").toArray()) {
+        lectures.insert(value.toInteger());
+    }
+
+    for (const QJsonValue &value : progress.value(u"completed_quiz_ids").toArray()) {
+        quizzes.insert(value.toInteger());
+    }
+
+    m_curriculum->setCompletedIds(lectures, quizzes);
+
+    // Usually the path of the lecture, such as "/course/x/learn/lecture/123"
+    static const QRegularExpression lecturePattern(QStringLiteral("lecture/(\\d+)"));
+    const QJsonValue lastSeen = progress.value(u"last_seen_page");
+    const auto match = lecturePattern.match(
+        lastSeen.isString() ? lastSeen.toString()
+                            : QString::number(lastSeen.toObject().value(u"id").toInteger()));
+    m_lastSeenLecture = match.hasMatch() ? match.captured(1).toLongLong() : 0;
+
+    updateResumeRow();
+    Q_EMIT progressChanged();
 }
 
 void CourseSession::updateResumeRow()
