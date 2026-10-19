@@ -3,6 +3,8 @@
 
 qt_add_executable(udemy-tv
     main.cpp
+    apicache.cpp
+    apicache.h
     apptheme.cpp
     apptheme.h
     captionparser.cpp
@@ -136,6 +138,7 @@ target_link_libraries(udemy-tv PRIVATE
     Qt6::Qml
     Qt6::Quick
     Qt6::QuickControls2
+    Qt6::Sql
     Qt6::Widgets
     Qt6::WebEngineQuick
     KF6::I18n

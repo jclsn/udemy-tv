@@ -27,6 +27,7 @@ find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS
     Qml
     Quick
     QuickControls2
+    Sql
     Widgets
     Multimedia
     WebEngineQuick
@@ -73,6 +74,6 @@ set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 set(CPACK_DEBIAN_PACKAGE_DEPENDS
     "qml6-module-org-kde-kirigami, qml6-module-qtwebengine, qml6-module-qtwebchannel, \
 qml6-module-qtmultimedia, qml6-module-qtquick-layouts, qml6-module-qtquick-templates, \
-qml6-module-qtquick-effects, qml6-module-qtcore")
+qml6-module-qtquick-effects, qml6-module-qtcore, libqt6sql6-sqlite")
 set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "qml6-module-qtquick-pdf, qml6-module-org-kde-desktop")
 include(CPack)
