@@ -51,6 +51,9 @@ BigscreenUI.ScrollablePage {
     ColumnLayout {
         spacing: Kirigami.Units.largeSpacing
 
+        // ▲ and ▼ go through every setting; the headings between them are skipped
+        BigscreenUI.KeyNavigationGroup.orientation: Qt.Vertical
+
         BigscreenUI.Label {
             text: i18n("Account")
             type: BigscreenUI.Label.Heading
@@ -58,6 +61,9 @@ BigscreenUI.ScrollablePage {
         }
 
         BigscreenUI.TextDelegate {
+            // Information only, but reachable with the remote like every row
+            focusPolicy: Qt.StrongFocus
+            focus: true
             Layout.fillWidth: true
             text: UdemyClient.user.display_name ?? ""
             description: UdemyClient.demoMode ? i18n("Demo mode: sample courses, no account")
@@ -71,7 +77,6 @@ BigscreenUI.ScrollablePage {
         BigscreenUI.ButtonDelegate {
             id: signOutButton
             Layout.fillWidth: true
-            focus: true
             visible: !UdemyClient.demoMode
             text: i18n("Sign out")
             description: i18n("Removes your login from this TV")
@@ -157,6 +162,8 @@ BigscreenUI.ScrollablePage {
         }
 
         BigscreenUI.TextDelegate {
+            // Information only, but reachable with the remote like every row
+            focusPolicy: Qt.StrongFocus
             Layout.fillWidth: true
             text: i18n("Udemy TV %1", Qt.application.version)
             description: i18n("An unofficial app, not made or endorsed by Udemy, Inc. Your courses "
@@ -165,6 +172,8 @@ BigscreenUI.ScrollablePage {
         }
 
         BigscreenUI.TextDelegate {
+            // Information only, but reachable with the remote like every row
+            focusPolicy: Qt.StrongFocus
             Layout.fillWidth: true
             text: UdemyClient.drmAvailable ? i18n("Copy-protected lectures: supported")
                 : i18n("Copy-protected lectures: not supported")
