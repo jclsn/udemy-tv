@@ -8,7 +8,7 @@ import QtCore
 Settings {
     category: "Preferences"
 
-    // "light" as udemy.com, "dark", or "system" to follow the TV; read by apptheme.cpp too
+    // "light", "dark", or "system" to follow the TV; read by apptheme.cpp too
     property string theme: "light"
 
     // "off", "auto" (the system language) or a language code such as "en"

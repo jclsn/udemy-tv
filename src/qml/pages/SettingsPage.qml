@@ -30,7 +30,7 @@ BigscreenUI.ScrollablePage {
         { text: "日本語", value: "ja" }
     ]
     readonly property var themeOptions: [
-        { text: i18n("Light, as udemy.com"), value: "light" },
+        { text: i18n("Light"), value: "light" },
         { text: i18n("Dark"), value: "dark" },
         { text: i18n("Same as the TV"), value: "system" }
     ]
