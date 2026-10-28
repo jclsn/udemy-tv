@@ -233,5 +233,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // Outside Plasma, Bigscreen UI applies a color scheme of its own when the window is made
+    theme.apply();
+
     return app.exec();
 }
