@@ -29,8 +29,8 @@ Item {
     }
 
     // Takes a 1px corner until it is needed; Chromium throttles pages it thinks are hidden
-    width: needsAttention ? parent.width : 1
-    height: needsAttention ? parent.height : 1
+    width: needsAttention ? Window.width : 1
+    height: needsAttention ? Window.height : 1
     z: needsAttention ? 1000 : -1
     opacity: needsAttention ? 1 : 0.01
 

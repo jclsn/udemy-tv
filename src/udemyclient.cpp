@@ -80,30 +80,7 @@ UdemyClient::UdemyClient(bool demoMode, QObject *parent)
     ApiCache::instance().setScope(m_portal);
 
     if (m_demoMode) {
-        // Nothing is stored for the demo
-        m_profile = new QQuickWebEngineProfile(this);
         m_demo = new DemoBackend(this);
-    } else {
-        m_profile = new QQuickWebEngineProfile(QStringLiteral("udemy-tv"), this);
-        m_profile->setPersistentCookiesPolicy(QQuickWebEngineProfile::ForcePersistentCookies);
-        m_profile->setHttpCacheType(QQuickWebEngineProfile::DiskHttpCache);
-    }
-
-    // Look like the Chrome the engine is built on; some sign-in pages turn away unknown browsers
-    QString userAgent = m_profile->httpUserAgent();
-    userAgent.remove(QRegularExpression(QStringLiteral(" QtWebEngine/\\S+")));
-    m_profile->setHttpUserAgent(userAgent);
-
-    if (!m_demoMode) {
-        auto cookies = m_profile->cookieStore();
-        connect(cookies, &QWebEngineCookieStore::cookieAdded, this, &UdemyClient::onCookieAdded);
-        connect(cookies,
-                &QWebEngineCookieStore::cookieRemoved,
-                this,
-                &UdemyClient::onCookieRemoved);
-        cookies->loadAllCookies();
-        // The store announces each stored cookie, but not when it is done
-        QTimer::singleShot(1500, this, &UdemyClient::finishLoadingCookies);
     }
 
     m_timeoutTimer.setInterval(5000);
@@ -139,14 +116,49 @@ UdemyClient *UdemyClient::create(QQmlEngine *, QJSEngine *)
     return s_instance;
 }
 
-QObject *UdemyClient::profile() const
+QObject *UdemyClient::profile()
 {
+    return webProfile();
+}
+
+QQuickWebEngineProfile *UdemyClient::webProfile()
+{
+    // Made when first needed: it starts the browser engine, which takes a while, and the app
+    // shows its first page before that
+    if (!m_profile) {
+        createProfile();
+    }
+
     return m_profile;
 }
 
-QQuickWebEngineProfile *UdemyClient::webProfile() const
+void UdemyClient::createProfile()
 {
-    return m_profile;
+    if (m_demoMode) {
+        // Nothing is stored for the demo
+        m_profile = new QQuickWebEngineProfile(this);
+    } else {
+        m_profile = new QQuickWebEngineProfile(QStringLiteral("udemy-tv"), this);
+        m_profile->setPersistentCookiesPolicy(QQuickWebEngineProfile::ForcePersistentCookies);
+        m_profile->setHttpCacheType(QQuickWebEngineProfile::DiskHttpCache);
+    }
+
+    // Look like the Chrome the engine is built on; some sign-in pages turn away unknown browsers
+    QString userAgent = m_profile->httpUserAgent();
+    userAgent.remove(QRegularExpression(QStringLiteral(" QtWebEngine/\\S+")));
+    m_profile->setHttpUserAgent(userAgent);
+
+    if (m_demoMode) {
+        return;
+    }
+
+    auto cookies = m_profile->cookieStore();
+    connect(cookies, &QWebEngineCookieStore::cookieAdded, this, &UdemyClient::onCookieAdded);
+    connect(cookies, &QWebEngineCookieStore::cookieRemoved, this, &UdemyClient::onCookieRemoved);
+    cookies->loadAllCookies();
+
+    // The store announces each stored cookie, but not when it is done
+    QTimer::singleShot(1500, this, &UdemyClient::finishLoadingCookies);
 }
 
 bool UdemyClient::demoMode() const
@@ -635,7 +647,7 @@ void UdemyClient::useAccessToken(const QString &token)
     cookie.setPath(QStringLiteral("/"));
     cookie.setSecure(true);
     cookie.setExpirationDate(QDateTime::currentDateTimeUtc().addYears(1));
-    m_profile->cookieStore()->setCookie(cookie, baseUrl());
+    webProfile()->cookieStore()->setCookie(cookie, baseUrl());
 
     m_accessToken = trimmed;
     m_tokenPending = true;
@@ -650,7 +662,7 @@ void UdemyClient::logout()
         return;
     }
 
-    m_profile->cookieStore()->deleteAllCookies();
+    webProfile()->cookieStore()->deleteAllCookies();
     m_tokenCookies.clear();
     ApiCache::instance().clear();
     m_profile->clearHttpCache();

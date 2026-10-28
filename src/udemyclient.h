@@ -84,8 +84,8 @@ public:
     static UdemyClient *instance();
     static UdemyClient *create(QQmlEngine *, QJSEngine *);
 
-    QObject *profile() const;
-    QQuickWebEngineProfile *webProfile() const;
+    QObject *profile();
+    QQuickWebEngineProfile *webProfile();
     bool demoMode() const;
     AuthState authState() const;
     bool bridgeReady() const;
@@ -201,6 +201,7 @@ private:
     void setLastError(const QString &error);
     void rejectLogin();
     void startWithCachedAccount();
+    void createProfile();
     void onCookieAdded(const QNetworkCookie &cookie);
     void onCookieRemoved(const QNetworkCookie &cookie);
     void finishLoadingCookies();

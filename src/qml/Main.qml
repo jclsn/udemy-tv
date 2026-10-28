@@ -137,8 +137,23 @@ BigscreenUI.ApplicationWindow {
         }
     }
 
-    ApiBridge {
+    // Starting the browser engine behind the bridge holds up the window for a moment, so the
+    // first page is shown before
+    Loader {
         id: bridge
+
+        z: item?.z ?? 0
+        active: false
+        sourceComponent: ApiBridge {}
+    }
+
+    Connections {
+        target: root
+        enabled: !bridge.active
+
+        function onFrameSwapped(): void {
+            bridge.active = true;
+        }
     }
 
     // Light or dark, as chosen in the settings
