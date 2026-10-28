@@ -49,14 +49,15 @@ jobs:
       - name: Install dependencies
         env:
           DEBIAN_FRONTEND: noninteractive
+        # KF6ColorScheme needs KF6Config to build against, but its -dev package does not pull it in
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
             ca-certificates cmake dpkg-dev extra-cmake-modules file g++ gettext git ninja-build \
             qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qt6-declarative-dev-tools \
             qt6-multimedia-dev qt6-webchannel-dev qt6-webengine-dev \
-            libkirigami-dev libkf6colorscheme-dev libkf6coreaddons-dev libkf6i18n-dev \
-            libgl-dev libvulkan-dev
+            libkirigami-dev libkf6colorscheme-dev libkf6config-dev libkf6coreaddons-dev \
+            libkf6i18n-dev libgl-dev libvulkan-dev
 
       - uses: actions/checkout@v5
 
