@@ -51,13 +51,27 @@ BigscreenUI.ApplicationWindow {
         },
         Kirigami.Action {
             text: i18n("Browse")
-            onTriggered: root.showPage(browsePage)
+            onTriggered: {
+                if (!root.browsePage) {
+                    root.browsePage = browsePageComponent.createObject(root.contentItem,
+                                                                       { visible: false });
+                }
+
+                root.showPage(root.browsePage);
+            }
         },
         Kirigami.Action {
             text: i18n("Settings")
             icon.name: "settings-configure"
             displayHint: Kirigami.DisplayHint.IconOnly
-            onTriggered: root.showPage(settingsPage)
+            onTriggered: {
+                if (!root.settingsPage) {
+                    root.settingsPage = settingsPageComponent.createObject(root.contentItem,
+                                                                           { visible: false });
+                }
+
+                root.showPage(root.settingsPage);
+            }
         },
         // Not a page, but a switch: the moon turns the colors dark, the sun light again
         Kirigami.Action {
@@ -74,14 +88,12 @@ BigscreenUI.ApplicationWindow {
     readonly property list<Item> pages: [
         HomePage {
             id: homePage
-        },
-        BrowsePage {
-            id: browsePage
-        },
-        SettingsPage {
-            id: settingsPage
         }
     ]
+
+    // Made when first opened, so the app starts sooner
+    property BrowsePage browsePage: null
+    property SettingsPage settingsPage: null
 
     initialPage: homePage
 
@@ -234,6 +246,16 @@ BigscreenUI.ApplicationWindow {
             onCloseRequested: gate.pop()
             onBusinessLoginRequested: gate.replace(loginWebPage)
         }
+    }
+
+    Component {
+        id: browsePageComponent
+        BrowsePage {}
+    }
+
+    Component {
+        id: settingsPageComponent
+        SettingsPage {}
     }
 
     Component {
