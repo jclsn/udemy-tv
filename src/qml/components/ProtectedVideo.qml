@@ -52,7 +52,15 @@ Item {
     WebEngineView {
         id: view
 
-        anchors.fill: parent
+        // Drawn at the size of the window and scaled to fit. Resizing it would make the browser
+        // engine lay out and draw the page again for every frame of the switch between layouts,
+        // which it does late and unevenly.
+        width: Math.max(1, root.Window.width)
+        height: Math.max(1, root.Window.height)
+        transformOrigin: Item.TopLeft
+        scale: Math.min(root.width / width, root.height / height)
+        x: (root.width - width * scale) / 2
+        y: (root.height - height * scale) / 2
         // The remote stays with the app's controls
         enabled: false
         profile: UdemyClient.profile
