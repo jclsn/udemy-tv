@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "udemyclient.h"
+
 #include <QObject>
 #include <QQmlEngine>
 #include <QVariantMap>
@@ -37,6 +39,17 @@ public:
     Q_INVOKABLE void reload();
 
     /*!
+       \brief Loads a lecture of this course ahead, such as the next one, so it starts sooner.
+     */
+    Q_INVOKABLE void prefetchLecture(qint64 lectureId);
+
+    /*!
+       \brief Loads a lecture ahead, for a LectureLoader to take over within a few minutes. Its
+       links expire, so it is kept in memory only and used once.
+     */
+    static void prefetch(qint64 courseId, qint64 lectureId);
+
+    /*!
        \brief Where the raw lecture JSON is saved when UDEMY_TV_DUMP_LECTURES is set.
      */
     static QString dumpDirectory();
@@ -50,6 +63,7 @@ Q_SIGNALS:
 
 private:
     void scheduleLoad();
+    void apply(int generation, const UdemyClient::Reply &reply);
     void setLoading(bool loading);
     void setError(const QString &error);
 

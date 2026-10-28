@@ -4,6 +4,7 @@
 #include "coursesession.h"
 
 #include "apicache.h"
+#include "lectureloader.h"
 #include "udemyclient.h"
 
 #include <QDateTime>
@@ -296,6 +297,13 @@ void CourseSession::updateResumeRow()
     if (m_resumeRow != row) {
         m_resumeRow = row;
         Q_EMIT resumeRowChanged();
+    }
+
+    // Continuing is the likely next step from the course page
+    const QVariantMap resume = item(row);
+
+    if (resume.value(QStringLiteral("itemClass")).toString() == u"lecture") {
+        LectureLoader::prefetch(courseId(), resume.value(QStringLiteral("id")).toLongLong());
     }
 }
 

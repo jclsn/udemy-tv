@@ -110,6 +110,13 @@ BigscreenUI.Page {
             onNextRequested: root.goTo(root.nextRow)
             onPreviousRequested: root.goTo(root.previousRow)
             onWebPlayerRequested: root.useWebPlayer = true
+
+            // The last minute: load the next lecture, so "Up next" starts it at once
+            onPositionChanged: {
+                if (duration > 0 && duration - position < 60 * 1000 && root.nextRow >= 0) {
+                    loader.prefetchLecture(root.session.item(root.nextRow).id ?? 0);
+                }
+            }
         }
     }
 
