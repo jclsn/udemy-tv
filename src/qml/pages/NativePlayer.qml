@@ -532,6 +532,10 @@ FocusScope {
         z: 4
         focus: !upNext.active
 
+        // Back hides the controls; once they are hidden, it leaves the lecture
+        BigscreenUI.BackHandler.enabled: shown
+        BigscreenUI.BackHandler.onActivated: hide()
+
         overline: root.session.course.title ?? ""
         title: (root.item.number ?? 0) > 0
             ? "%1. %2".arg(root.item.number).arg(root.item.title)
