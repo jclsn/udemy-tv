@@ -10,6 +10,8 @@ An unofficial Udemy app for Plasma Bigscreen, made to be used with a TV remote.
 It is built with Qt 6, Kirigami and the
 [Bigscreen UI](https://invent.kde.org/devinlin/bigscreen-ui) components.
 
+![My learning, with the sample courses of the demo mode](doc/screenshots/my-learning.png)
+
 > Udemy TV is not affiliated with Udemy, Inc.
 
 
