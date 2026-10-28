@@ -11,7 +11,7 @@
         return;
     }
 
-    // Replace the page (robots.txt) with a bare video
+    // Fill the empty page with a bare video
     document.documentElement.style.cssText = "margin: 0; height: 100%; background: #000;";
     document.body.innerHTML = "";
     document.body.style.cssText = "margin: 0; height: 100%; overflow: hidden; background: #000;";

@@ -57,10 +57,13 @@ Item {
         enabled: false
         profile: UdemyClient.profile
         backgroundColor: "black"
-        url: UdemyClient.bridgeUrl
 
         settings.playbackRequiresUserGesture: false
         settings.showScrollBars: false
+
+        // An empty page on the Udemy origin, as the license server expects. Made here instead of
+        // loaded from Udemy, which would take a moment longer for each lecture.
+        Component.onCompleted: loadHtml("<html><body></body></html>", UdemyClient.bridgeUrl)
 
         onLoadingChanged: request => {
             if (request.status !== WebEngineView.LoadSucceededStatus) {
