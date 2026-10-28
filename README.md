@@ -3,76 +3,155 @@ SPDX-FileCopyrightText: 2026 Jan Claussen <jan.claussen10@web.de>
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# Udemy TV (unofficial) for Plasma Bigscreen
+# Udemy TV
 
-An unofficial Udemy app for TVs, built with Qt 6, Kirigami and the
-[Bigscreen UI](https://invent.kde.org/devinlin/bigscreen-ui) components (vendored in
-`3rdparty/`). Not affiliated with Udemy, Inc.
+An unofficial Udemy app for Plasma Bigscreen, made to be used with a TV remote.
+
+It is built with Qt 6, Kirigami and the
+[Bigscreen UI](https://invent.kde.org/devinlin/bigscreen-ui) components.
+
+> Udemy TV is not affiliated with Udemy, Inc.
+
+
+## Features
+
+- **My learning** and **Browse**, laid out like udemy.com
+- **Your courses** with their progress, lists, wishlist and archive
+- **Lectures** with captions, playback speed, quality, resume and "Up next"
+- **Copy-protected lectures** in the app's own player
+- **Slides and speaker** side by side, or one large with the other in a corner
+- **Course pages** from the catalog, with buying through Udemy's checkout
+- **Light and dark colors**, switched with the sun or moon in the top bar
+
 
 ## Building
 
-Needs Qt 6.11 (Base, Declarative, Multimedia, WebEngine, WebChannel), KDE Frameworks 6.14
-(Kirigami, KI18n, KCoreAddons, KColorScheme) and Extra CMake Modules.
+You need:
 
-    cmake -B build -G Ninja -DBUILD_TESTING=ON
-    cmake --build build
-    ctest --test-dir build
-    sudo cmake --install build    # adds it to the Bigscreen app list
+- Qt 6.11: Base, Declarative, Multimedia, WebEngine and WebChannel
+- KDE Frameworks 6.14: Kirigami, KI18n, KCoreAddons and KColorScheme
+- Extra CMake Modules
+
+Then build, test and install:
+
+```sh
+cmake -B build -G Ninja -DBUILD_TESTING=ON
+cmake --build build
+ctest --test-dir build
+sudo cmake --install build
+```
+
+Installing adds Udemy TV to the Bigscreen app list.
+
+### Bigscreen UI
+
+Bigscreen UI is not in most distributions yet, so a copy comes with the app in `3rdparty/`.
+If it is installed on your system, use that one instead:
+
+```sh
+cmake -B build -G Ninja -DUSE_SYSTEM_BIGSCREEN_UI=ON
+```
+
 
 ## Running
 
-    udemy-tv                       # sign in with your account
-    udemy-tv --demo                # sample courses, no account
-    udemy-tv --token <access_token> [--portal <business-subdomain>] [--windowed]
+```sh
+udemy-tv                # sign in with your account
+udemy-tv --demo         # sample courses, no account needed
+udemy-tv --windowed     # in a window instead of full screen
+```
+
 
 ## Signing in
 
-- **Access token:** sign in to udemy.com in a browser, open the developer tools and copy the
-  value of the `access_token` cookie (under Application or Storage › Cookies), as for Udeler.
-  Pass it with `--token`, set `UDEMY_TOKEN`, or paste it on the login screen, for example
-  from a phone's clipboard with KDE Connect.
-- **Udemy's login page** inside the app. This does not work for every account: Google sign-in
-  refuses embedded browsers.
-- **Udemy Business:** enter your organization's subdomain, then sign in on its page.
+There are three ways to sign in.
+
+**Udemy's login page**, inside the app.
+This does not work for every account: Google sign-in refuses embedded browsers.
+
+1. Sign in to udemy.com in a browser.
+2. Open the developer tools and find the cookies (under Application or Storage).
+3. Copy the value of the `access_token` cookie.
+4. Paste it on the login screen, for example from a phone with KDE Connect.
+
+You can also pass it with `--token <access_token>` or the `UDEMY_TOKEN` variable.
+
+**Udemy Business**: enter your organization's subdomain, then sign in on its page.
+On the command line, use `--portal <subdomain>`.
+
+
+## Using the remote
+
+| Key | What it does |
+|---|---|
+| Arrows | Move around |
+| OK | Open, play or pause |
+| Back | Go back |
+| ▲ or S while playing, controls hidden | Switch between slides and speaker |
+| Menu on a lecture in the course list | Mark it as completed or not |
+
 
 ## How it works
 
-- **API:** Udemy is behind Cloudflare, so requests go through `fetch()` in a hidden web page
-  on the Udemy origin (`src/bridge.js`, `ApiBridge.qml`).
-- **Playback:** HLS and MP4 lectures play natively with captions, speed, quality, resume,
-  mark as completed and "Up next". DRM-protected lectures play in Udemy's web player, driven
-  by the same controls (`src/webplayer.js`). That needs a Widevine module, which is found in
-  Chromium's or Chrome's profile.
-- **Slides and speaker:** "video and slide mashup" lectures show both side by side, or one
-  large with the other as picture-in-picture. Switch with ▲ while the controls are hidden, S,
-  or the "Switch view" button.
-- **Buying:** Browse, open a course, "Buy now" opens Udemy's checkout page.
-- **Colors:** light as on udemy.com, or dark. The moon or sun beside the settings button
-  switches them; Settings can also follow the TV.
+**Requests to Udemy.**
+Udemy is behind Cloudflare, which turns away apps that are not a browser.
+So all requests run in a hidden web page on udemy.com (`src/bridge.js`, `ApiBridge.qml`).
 
-`UDEMY_TV_DUMP_LECTURES=1` saves the raw lecture data to
-`~/.cache/udemy-tv/udemy-tv/lectures/`. The format of mashup slides is undocumented and the parser
-accepts several shapes (see `tests/`); a dump of a lecture that shows no slides helps fix it.
+**Playback.**
+Most lectures are protected with Widevine.
+They play with Shaka Player and the browser engine's Widevine module, in the app's own player.
+The module is taken from Chromium or Chrome, which download it on their own.
+
+**Cache.**
+Your courses, curricula and course pages are kept in a small database.
+The app shows them at once on the next start, and updates them in the background.
+
+
+## Debugging
+
+Set `UDEMY_TV_DUMP_LECTURES=1` to save the raw data of each lecture to
+`~/.cache/udemy-tv/udemy-tv/lectures/`.
+
+This helps when a lecture does not show its slides: their format is undocumented,
+and the parser only knows the shapes in `tests/`.
+
 
 ## Packages
 
-- Debian and Ubuntu: `cpack -G DEB` in the build directory
-- Arch Linux: `packaging/arch/PKGBUILD`
-- Flatpak: `packaging/flatpak/io.github.udemytv.yml`
+| System | How |
+|---|---|
+| Debian, Ubuntu | `cpack -G DEB` in the build directory |
+| Arch Linux | `packaging/arch/PKGBUILD` |
+| Flatpak | `packaging/flatpak/io.github.udemytv.yml` |
 
-GitHub Actions builds all three, runs the tests and checks the code style on every push.
+GitHub Actions builds all three on every push, runs the tests and checks the code style.
+
 
 ## Contributing
 
-C++ follows the KDE Frameworks clang-format style with lines of at most 100 characters
-(`.clang-format`); QML, JavaScript and CMake keep to the same length. Commit messages follow
-[Conventional Commits](https://www.conventionalcommits.org). Enable the hook that checks the
-formatting before each commit with:
+**Code style.**
+C++ follows the KDE Frameworks clang-format style (`.clang-format`).
+Lines are at most 100 characters long, in QML, JavaScript and CMake too.
 
-    git config core.hooksPath .githooks
+**Commits.**
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org).
+This hook checks the formatting before each commit:
 
-After changing texts in the interface, update the translation template `po/udemy-tv.pot` with
-`./Messages.sh`. Translations go to `po/<language>/udemy-tv.po`.
+```sh
+git config core.hooksPath .githooks
+```
 
-The demo images come from the Bigscreen UI gallery and are CC-BY-SA-4.0 (see
-`src/demo/images/*.license`).
+**Translations.**
+After changing texts in the interface, update the template `po/udemy-tv.pot`:
+
+```sh
+./Messages.sh
+```
+
+Translations go to `po/<language>/udemy-tv.po`.
+
+
+## Credits
+
+The demo images come from the Bigscreen UI gallery and are CC-BY-SA-4.0
+(see `src/demo/images/*.license`).
