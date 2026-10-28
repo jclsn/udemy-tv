@@ -1,6 +1,7 @@
 version = 1
 
 [[annotations]]
-path = ["src/demo/*.json", "src/demo/*.vtt", "tests/data/*.json", ".gitignore", "REUSE.toml"]
+path = ["src/demo/*.json", "src/demo/*.vtt", "tests/data/*.json", ".gitignore", "REUSE.toml",
+        "po/udemy-tv.pot"]
 SPDX-FileCopyrightText = "2026 Jan Claussen <jan.claussen10@web.de>"
 SPDX-License-Identifier = "CC0-1.0"

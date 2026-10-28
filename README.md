@@ -71,5 +71,8 @@ formatting before each commit with:
 
     git config core.hooksPath .githooks
 
+After changing texts in the interface, update the translation template `po/udemy-tv.pot` with
+`./Messages.sh`. Translations go to `po/<language>/udemy-tv.po`.
+
 The demo images come from the Bigscreen UI gallery and are CC-BY-SA-4.0 (see
 `src/demo/images/*.license`).

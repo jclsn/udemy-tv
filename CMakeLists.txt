@@ -55,6 +55,10 @@ endif()
 add_subdirectory(src)
 add_subdirectory(data)
 
+# Translations, one folder per language with udemy-tv.po (template: po/udemy-tv.pot). Having po/
+# also keeps ECM from setting up a download of translations from KDE's servers.
+ki18n_install(po)
+
 if(BUILD_TESTING)
     add_subdirectory(tests)
 endif()
