@@ -15,6 +15,47 @@
 
 namespace
 {
+QString detailsKey(qint64 courseId)
+{
+    return QStringLiteral("course/%1/details").arg(courseId);
+}
+
+QString outlineKey(qint64 courseId)
+{
+    return QStringLiteral("course/%1/outline").arg(courseId);
+}
+
+// The texts of the course page
+QUrl detailsUrl(qint64 courseId)
+{
+    QUrlQuery query;
+    query.addQueryItem(QStringLiteral("fields[course]"),
+                       QStringLiteral("description,objectives,prerequisites,target_audiences,"
+                                      "locale,caption_languages,last_update_date,"
+                                      "num_subscribers,visible_instructors"));
+    query.addQueryItem(QStringLiteral("fields[user]"),
+                       QStringLiteral("display_name,job_title,image_100x100"));
+
+    return UdemyClient::instance()->apiUrl(QStringLiteral("courses/%1/").arg(courseId), query);
+}
+
+// The outline of the curriculum, as the course page shows it before buying. Udemy takes a few
+// seconds to answer.
+QUrl outlineUrl(qint64 courseId)
+{
+    QUrlQuery query;
+    query.addQueryItem(QStringLiteral("components"), QStringLiteral("curriculum_context"));
+
+    return UdemyClient::instance()->apiUrl(
+        QStringLiteral("course-landing-components/%1/me/").arg(courseId),
+        query);
+}
+
+QJsonObject outlineData(const QJsonDocument &json)
+{
+    return json.object().value(u"curriculum_context").toObject().value(u"data").toObject();
+}
+
 QStringList toStringList(const QJsonValue &value)
 {
     QStringList list;
@@ -49,8 +90,7 @@ void CourseDetails::setCourseId(qint64 id)
 
 bool CourseDetails::loading() const
 {
-    // With a cached page there is nothing to wait for
-    return m_pending > 0 && !m_cached;
+    return m_loading;
 }
 
 QString CourseDetails::error() const
@@ -118,14 +158,14 @@ QString CourseDetails::totalLength() const
     return m_totalLength;
 }
 
-void CourseDetails::setPending(int pending)
+void CourseDetails::setLoading(bool loading)
 {
-    const bool wasLoading = loading();
-    m_pending = pending;
-
-    if (wasLoading != loading()) {
-        Q_EMIT loadingChanged();
+    if (m_loading == loading) {
+        return;
     }
+
+    m_loading = loading;
+    Q_EMIT loadingChanged();
 }
 
 void CourseDetails::load()
@@ -133,19 +173,18 @@ void CourseDetails::load()
     const int generation = ++m_generation;
 
     if (m_courseId <= 0) {
-        setPending(0);
+        setLoading(false);
 
         return;
     }
 
     // What the page said last time, at once; what it says now follows
-    const QString detailsKey = QStringLiteral("course/%1/details").arg(m_courseId);
-    const QString outlineKey = QStringLiteral("course/%1/outline").arg(m_courseId);
-    const QJsonObject cachedDetails = ApiCache::instance().read(detailsKey).object();
-    const QJsonObject cachedOutline = ApiCache::instance().read(outlineKey).object();
-    m_cached = !cachedDetails.isEmpty();
+    const qint64 courseId = m_courseId;
+    const QJsonObject cachedDetails = ApiCache::instance().read(detailsKey(courseId)).object();
+    const QJsonObject cachedOutline = ApiCache::instance().read(outlineKey(courseId)).object();
+    const bool cached = !cachedDetails.isEmpty();
 
-    if (!cachedDetails.isEmpty()) {
+    if (cached) {
         applyDetails(cachedDetails);
     }
 
@@ -153,67 +192,47 @@ void CourseDetails::load()
         applyOutline(cachedOutline);
     }
 
-    setPending(2);
+    // The outline takes longer, and shows up below the texts when it is there
+    setLoading(!cached);
     auto client = UdemyClient::instance();
 
-    // The texts of the course page
-    QUrlQuery query;
-    query.addQueryItem(QStringLiteral("fields[course]"),
-                       QStringLiteral("description,objectives,prerequisites,target_audiences,"
-                                      "locale,caption_languages,last_update_date,"
-                                      "num_subscribers,visible_instructors"));
-    query.addQueryItem(QStringLiteral("fields[user]"),
-                       QStringLiteral("display_name,job_title,image_100x100"));
-    const QUrl courseUrl = client->apiUrl(QStringLiteral("courses/%1/").arg(m_courseId), query);
+    client->get(
+        detailsUrl(courseId),
+        this,
+        [this, generation, courseId, cached, cachedDetails](const UdemyClient::Reply &reply) {
+            if (generation != m_generation) {
+                return;
+            }
 
-    client->get(courseUrl,
+            setLoading(false);
+
+            if (!reply.ok()) {
+                // An outdated page is better than an error
+                m_error = cached ? QString() : reply.error;
+                Q_EMIT detailsChanged();
+
+                return;
+            }
+
+            const QJsonObject course = reply.json.object();
+
+            if (course != cachedDetails) {
+                ApiCache::instance().write(detailsKey(courseId), reply.json);
+                applyDetails(course);
+            }
+        });
+
+    client->get(outlineUrl(courseId),
                 this,
-                [this, generation, detailsKey, cachedDetails](const UdemyClient::Reply &reply) {
+                [this, generation, courseId, cachedOutline](const UdemyClient::Reply &reply) {
                     if (generation != m_generation) {
                         return;
                     }
 
-                    setPending(m_pending - 1);
-
-                    if (!reply.ok()) {
-                        // An outdated page is better than an error
-                        m_error = m_cached ? QString() : reply.error;
-                        Q_EMIT detailsChanged();
-
-                        return;
-                    }
-
-                    const QJsonObject course = reply.json.object();
-
-                    if (course != cachedDetails) {
-                        ApiCache::instance().write(detailsKey, reply.json);
-                        applyDetails(course);
-                    }
-                });
-
-    // The outline of the curriculum, as the course page shows it before buying
-    QUrlQuery outlineQuery;
-    outlineQuery.addQueryItem(QStringLiteral("components"), QStringLiteral("curriculum_context"));
-    const QUrl outlineUrl =
-        client->apiUrl(QStringLiteral("course-landing-components/%1/me/").arg(m_courseId),
-                       outlineQuery);
-
-    client->get(outlineUrl,
-                this,
-                [this, generation, outlineKey, cachedOutline](const UdemyClient::Reply &reply) {
-                    if (generation != m_generation) {
-                        return;
-                    }
-
-                    setPending(m_pending - 1);
-                    const QJsonObject data = reply.json.object()
-                                                 .value(u"curriculum_context")
-                                                 .toObject()
-                                                 .value(u"data")
-                                                 .toObject();
+                    const QJsonObject data = outlineData(reply.json);
 
                     if (reply.ok() && data != cachedOutline) {
-                        ApiCache::instance().write(outlineKey, QJsonDocument(data));
+                        ApiCache::instance().write(outlineKey(courseId), QJsonDocument(data));
                         applyOutline(data);
                     }
                 });

@@ -73,13 +73,12 @@ Q_SIGNALS:
 
 private:
     void load();
-    void setPending(int pending);
+    void setLoading(bool loading);
     void applyDetails(const QJsonObject &course);
     void applyOutline(const QJsonObject &data);
 
     qint64 m_courseId = 0;
-    int m_pending = 0; // Requests still running
-    bool m_cached = false; // Shows what the page said last time
+    bool m_loading = false; // The texts are on their way, and none were cached
     int m_generation = 0;
     QString m_error;
     QString m_description;
