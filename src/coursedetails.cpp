@@ -15,6 +15,9 @@
 
 namespace
 {
+// Course pages change rarely; one from the last minutes is good enough
+constexpr qint64 PrefetchMaxAgeSeconds = 10 * 60;
+
 QString detailsKey(qint64 courseId)
 {
     return QStringLiteral("course/%1/details").arg(courseId);
@@ -166,6 +169,31 @@ void CourseDetails::setLoading(bool loading)
 
     m_loading = loading;
     Q_EMIT loadingChanged();
+}
+
+void CourseDetails::prefetch(qint64 courseId)
+{
+    qint64 age = 0;
+    const bool cached = !ApiCache::instance().read(detailsKey(courseId), &age).isNull();
+
+    if (courseId <= 0 || UdemyClient::instance()->demoMode()
+        || (cached && age < PrefetchMaxAgeSeconds)) {
+        return;
+    }
+
+    auto client = UdemyClient::instance();
+    client->get(detailsUrl(courseId), client, [courseId](const UdemyClient::Reply &reply) {
+        if (reply.ok()) {
+            ApiCache::instance().write(detailsKey(courseId), reply.json);
+        }
+    });
+    client->get(outlineUrl(courseId), client, [courseId](const UdemyClient::Reply &reply) {
+        const QJsonObject data = outlineData(reply.json);
+
+        if (reply.ok() && !data.isEmpty()) {
+            ApiCache::instance().write(outlineKey(courseId), QJsonDocument(data));
+        }
+    });
 }
 
 void CourseDetails::load()

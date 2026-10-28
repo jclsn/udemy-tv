@@ -88,8 +88,7 @@ BigscreenUI.Page {
             id: prefetchTimer
             interval: 700
             onTriggered: {
-                // The wishlist holds courses not bought yet, without a curriculum to load
-                if (root.tab !== HomePage.Wishlist && grid.currentIndex >= 0) {
+                if (grid.currentIndex >= 0) {
                     courses.prefetchCourse(courses.get(grid.currentIndex).id ?? 0);
                 }
             }

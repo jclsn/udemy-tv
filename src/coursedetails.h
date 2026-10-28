@@ -65,6 +65,11 @@ public:
     int lectureCount() const;
     QString totalLength() const;
 
+    /*!
+       \brief Loads a course's page into the cache, for it to open at once later.
+     */
+    static void prefetch(qint64 courseId);
+
 Q_SIGNALS:
     void courseIdChanged();
     void loadingChanged();

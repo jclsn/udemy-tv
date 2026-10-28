@@ -52,6 +52,19 @@ BigscreenUI.Page {
         labelHeight: cardMetrics.labelsHeight
         rowSpacing: Kirigami.Units.gridUnit * 1.5
 
+        // A course that keeps the focus for a moment is likely to be opened next
+        onCurrentIndexChanged: prefetchTimer.restart()
+
+        Timer {
+            id: prefetchTimer
+            interval: 700
+            onTriggered: {
+                if (grid.currentIndex >= 0) {
+                    results.prefetchCourse(results.get(grid.currentIndex).id ?? 0);
+                }
+            }
+        }
+
         // The grid can get focus before the courses arrive; then nothing would look focused
         onCountChanged: {
             if (currentIndex < 0 && count > 0) {

@@ -4,6 +4,7 @@
 #include "courselistmodel.h"
 
 #include "apicache.h"
+#include "coursedetails.h"
 #include "coursesession.h"
 #include "udemyclient.h"
 
@@ -617,7 +618,12 @@ void CourseListModel::search(int generation)
 
 void CourseListModel::prefetchCourse(qint64 courseId)
 {
-    CourseSession::prefetch(courseId);
+    // Courses to buy open their store page, your own courses their curriculum
+    if (m_source == Search || m_source == Wishlist) {
+        CourseDetails::prefetch(courseId);
+    } else {
+        CourseSession::prefetch(courseId);
+    }
 }
 
 QVariantMap CourseListModel::normalizeSearchResult(const QJsonObject &course)

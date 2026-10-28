@@ -100,8 +100,8 @@ public:
     Q_INVOKABLE void reload();
 
     /*!
-       \brief Loads a course's curriculum ahead, such as while its card has the focus, so its
-       page opens at once.
+       \brief Loads a course's page ahead, such as while its card has the focus, so it opens at
+       once: the curriculum of your own courses, the store page of others.
      */
     Q_INVOKABLE void prefetchCourse(qint64 courseId);
     Q_INVOKABLE QVariantMap get(int row) const;
