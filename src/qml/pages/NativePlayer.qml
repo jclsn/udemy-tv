@@ -175,24 +175,41 @@ FocusScope {
         return tracks.find(track => track.locale.toLowerCase().startsWith(prefix)) ?? null;
     }
 
-    function resume(): void {
-        resumed = true;
-
+    // Where to continue, in milliseconds: where the quality was changed, or where the lecture was
+    // left last time. -1 to start at the beginning.
+    function startPosition(): real {
         if (seekOnLoad >= 0) {
-            seekTo(seekOnLoad);
-            seekOnLoad = -1;
-
-            return;
+            return seekOnLoad;
         }
 
         const local = session.savedPosition(row);
         const seconds = local > 0 ? local : (lecture.resumePosition ?? 0);
-        const duration = root.duration / 1000;
+        const duration = root.duration > 0 ? root.duration / 1000 : (lecture.duration ?? 0);
 
         if (seconds > 5 && (duration <= 0 || seconds < duration - 15)) {
-            seekTo(seconds * 1000);
-            toast.show(i18n("Continuing at %1", formatTime(seconds * 1000)),
-                       "media-playback-start");
+            return seconds * 1000;
+        }
+
+        return -1;
+    }
+
+    // Goes to the start position once the video is loaded, unless it began there already
+    function resume(startedThere: bool): void {
+        resumed = true;
+        const position = startPosition();
+        const qualityChange = seekOnLoad >= 0;
+        seekOnLoad = -1;
+
+        if (position < 0) {
+            return;
+        }
+
+        if (!startedThere) {
+            seekTo(position);
+        }
+
+        if (!qualityChange) {
+            toast.show(i18n("Continuing at %1", formatTime(position)), "media-playback-start");
         }
     }
 
@@ -247,7 +264,7 @@ FocusScope {
                 || mediaStatus === MediaPlayer.BufferedMedia;
 
             if (!root.resumed && loaded && duration > 0) {
-                root.resume();
+                root.resume(false);
             } else if (mediaStatus === MediaPlayer.EndOfMedia) {
                 root.finished();
             }
@@ -390,10 +407,13 @@ FocusScope {
                 source: root.lecture.protectedSource ?? ""
                 licenseToken: root.lecture.licenseToken ?? ""
                 playbackRate: Preferences.playbackRate
+                // Starting there spares loading the beginning only to seek away from it
+                startPosition: Math.max(0, root.startPosition() / 1000)
 
                 onLoadedChanged: {
                     if (loaded && !root.resumed) {
-                        root.resume();
+                        // Not while the player is still telling that it loaded
+                        Qt.callLater(root.resume, true);
                     }
                 }
 
