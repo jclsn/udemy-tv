@@ -34,11 +34,14 @@ public:
      */
     static bool darkFromSettings();
 
+    /*!
+       \brief Applies the app's colors, again if something else changed them in between.
+     */
+    void apply();
+
 Q_SIGNALS:
     void darkChanged();
 
 private:
-    void apply();
-
     bool m_dark = false;
 };
