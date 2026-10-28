@@ -16,12 +16,16 @@
 
 namespace
 {
+// What the cards and pages of your own courses show. Prices and ratings take Udemy twice as long
+// to look up, so they are only asked for where the store needs them.
 const QString CourseFields = QStringLiteral(
     "id,title,headline,url,published_title,image_240x135,image_480x270,image_750x422,"
     "visible_instructors,completion_ratio,num_published_lectures,last_accessed_time,"
-    "enrollment_time,archive_time,favorite_time,avg_rating,avg_rating_recent,rating,"
-    "num_reviews,price,price_detail,is_paid,content_info,instructional_level,"
-    "num_subscribers,is_practice_test_course");
+    "enrollment_time,archive_time,content_info");
+const QString StoreCourseFields = CourseFields
+    + QStringLiteral(",favorite_time,avg_rating,avg_rating_recent,rating,num_reviews,price,"
+                     "price_detail,is_paid,instructional_level,num_subscribers,"
+                     "is_practice_test_course");
 
 // Udemy's own search page uses this GraphQL query; the old REST catalog is gone
 const QString SearchQuery = QStringLiteral(
@@ -32,11 +36,11 @@ const QString SearchQuery = QStringLiteral(
     " images { px480x270 } instructors { name } isFree level rating { average count }"
     " urlCourseLanding curriculum { contentCounts { lecturesCount } } } } } }");
 
-QUrlQuery courseQuery()
+QUrlQuery courseQuery(const QString &fields = CourseFields)
 {
     QUrlQuery query;
     query.addQueryItem(QStringLiteral("page_size"), QStringLiteral("100"));
-    query.addQueryItem(QStringLiteral("fields[course]"), CourseFields);
+    query.addQueryItem(QStringLiteral("fields[course]"), fields);
     query.addQueryItem(QStringLiteral("fields[user]"), QStringLiteral("display_name,job_title"));
 
     return query;
@@ -466,10 +470,10 @@ void CourseListModel::reload()
         break;
     }
     case Wishlist:
-        client->getAllPages(
-            client->apiUrl(QStringLiteral("users/me/wishlisted-courses/"), courseQuery()),
-            this,
-            finish);
+        client->getAllPages(client->apiUrl(QStringLiteral("users/me/wishlisted-courses/"),
+                                           courseQuery(StoreCourseFields)),
+                            this,
+                            finish);
         break;
     case Collections: {
         QUrlQuery query;
