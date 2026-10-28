@@ -16,6 +16,7 @@
 #include <QVariantMap>
 
 #include <functional>
+#include <memory>
 
 class QNetworkAccessManager;
 class QQuickWebEngineProfile;
@@ -175,6 +176,8 @@ Q_SIGNALS:
     void accessTokenChanged();
 
 private:
+    struct PageState;
+
     struct Pending {
         QPointer<QObject> context;
         bool hasContext = false;
@@ -194,6 +197,7 @@ private:
                  QObject *context,
                  Callback callback,
                  Session session = Session::Included);
+    void getPage(const QUrl &url, const std::shared_ptr<PageState> &state);
     void send(int id);
     void finish(int id, const Reply &reply);
     void checkTimeouts();

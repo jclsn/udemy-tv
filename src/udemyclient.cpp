@@ -328,44 +328,56 @@ void UdemyClient::deleteResource(const QUrl &url, QObject *context, Callback cal
     request(QStringLiteral("DELETE"), url, {}, context, std::move(callback));
 }
 
+struct UdemyClient::PageState {
+    QPointer<QObject> context;
+    bool hasContext = false;
+    PageCallback callback;
+    int maxPages = 0;
+    int pages = 0;
+    QJsonArray results;
+};
+
 void UdemyClient::getAllPages(const QUrl &url,
                               QObject *context,
                               PageCallback callback,
                               int maxPages)
 {
-    struct State {
-        QJsonArray results;
-        int pages = 0;
-    };
-    auto state = std::make_shared<State>();
-    auto step = std::make_shared<std::function<void(const QUrl &)>>();
-    QPointer<QObject> guard(context);
-    *step = [this, state, step, callback, maxPages, guard](const QUrl &pageUrl) {
-        get(pageUrl, guard, [this, state, step, callback, maxPages](const Reply &reply) {
-            if (!reply.ok()) {
-                callback(state->results, reply.error);
-                *step = nullptr; // Break the reference cycle
+    auto state = std::make_shared<PageState>();
+    state->context = context;
+    state->hasContext = context != nullptr;
+    state->callback = std::move(callback);
+    state->maxPages = maxPages;
+    getPage(url, state);
+}
 
-                return;
-            }
+void UdemyClient::getPage(const QUrl &url, const std::shared_ptr<PageState> &state)
+{
+    // The context went away while the previous page was loading
+    if (state->hasContext && !state->context) {
+        return;
+    }
 
-            const QJsonObject object = reply.json.object();
+    get(url, state->context, [this, state](const Reply &reply) {
+        if (!reply.ok()) {
+            state->callback(state->results, reply.error);
 
-            for (const QJsonValue &value : object.value(u"results").toArray()) {
-                state->results.append(value);
-            }
+            return;
+        }
 
-            const QString next = object.value(u"next").toString();
+        const QJsonObject object = reply.json.object();
 
-            if (!next.isEmpty() && ++state->pages < maxPages) {
-                (*step)(absoluteUrl(next));
-            } else {
-                callback(state->results, {});
-                *step = nullptr;
-            }
-        });
-    };
-    (*step)(url);
+        for (const QJsonValue &value : object.value(u"results").toArray()) {
+            state->results.append(value);
+        }
+
+        const QString next = object.value(u"next").toString();
+
+        if (!next.isEmpty() && ++state->pages < state->maxPages) {
+            getPage(absoluteUrl(next), state);
+        } else {
+            state->callback(state->results, {});
+        }
+    });
 }
 
 void UdemyClient::request(const QString &method,
